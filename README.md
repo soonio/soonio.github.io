@@ -1,4 +1,5 @@
 # 个人小站
 
 
-访问地址: https://soonio.github.io
+  [Github Pages 预览](https://soonio.github.io)
+  [中国域名预览](https://iosoon.cn)
