@@ -103,9 +103,7 @@
                 <a href="https://notebook.iosoon.cn">笔记本</a>
             </div>
 
-            <div class="title m-b-md">
-                功不唐捐，玉汝于成
-            </div>
+            <div id="big-text" class="title m-b-md">功不唐捐，玉汝于成</div>
 
             <div class="links">
                 <a class="github" href="https://github.com/soonio"><img width="20px" src="assert/github.svg" alt="github"></a>
@@ -119,5 +117,56 @@
     <div class="footer">
         版权所有：&copy; 2021 清流🦆
     </div>
+    <script>
+        const strings = [
+            "功不唐捐，玉汝于成",
+            "虚怀若竹，清气若兰",
+            "奋发有为，时不我待",
+            "仁义为友，道德为师",
+            "微笑向暖，安之若素",
+            "心有猛虎，细嗅蔷薇"
+        ]
+        const l = strings.length
+        const element = document.getElementById("big-text")
+        let oi = 0
+        let lock = false
+        function random(oi) {
+            let n = Math.ceil(Math.random() * (l - 1))
+            if (oi === n) {
+                return random(oi)
+            } else {
+                return n
+            }
+        }
+
+        setInterval(function () {
+            if (lock) {
+                return
+            } else {
+                lock = true
+            }
+
+            let counter = 50;
+            let half = false
+            const i = setInterval(function(){
+                if (half) {
+                    element.style.opacity =  (counter / 50).toString();
+                    counter++;
+                    if(counter >= 50) {
+                        lock = false
+                        clearInterval(i)
+                    }
+                } else {
+                    element.style.opacity =  (counter / 50).toString();
+                    counter--;
+                    if(counter < 1) {
+                        oi = random(oi)
+                        element.innerHTML = strings[oi]
+                        half = true
+                    }
+                }
+            }, 50)
+        }, 10);
+    </script>
 </body>
 </html>
