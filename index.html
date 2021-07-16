@@ -17,6 +17,7 @@
             height: 100vh;
             margin: 0;
         }
+        body {background: #f0f2f5 url(assert/background.svg) no-repeat 50%}
         .full-height {
             height: 100vh;
             min-height: 400px;
@@ -30,10 +31,15 @@
             position: relative;
         }
         .content {
+            min-width: 320px;
             text-align: center;
+        }
+        .logo {
+            width: 40px
         }
         .title {
             font-size: 84px;
+            margin-bottom: 30px;
         }
         .links > span {
             color: #636b6f;
@@ -52,10 +58,6 @@
             text-decoration: none;
             text-transform: uppercase;
         }
-
-        .m-b-md {
-            margin-bottom: 30px;
-        }
         .top-left {
             position: absolute;
             left: 10px;
@@ -66,7 +68,6 @@
             right: 10px;
             top: 16px;
         }
-        body {background: #f0f2f5 url(assert/background.svg) no-repeat 50%}
         .footer {
             font-size: 12px;
             bottom: 0;
@@ -75,6 +76,14 @@
             line-height: 20px;
             text-align: center;
             padding: 5px 0
+        }
+        @media (min-height: 375px) {
+            .title {
+                font-size: 34px;
+            }
+            .top-right {
+                display: none;
+            }
         }
         @media (min-height:500px){
             .footer {
@@ -86,10 +95,6 @@
             text-decoration: none;
             text-transform: uppercase;
         }
-        .logo {
-            width: 40px
-        }
-
     </style>
     <link rel="apple-touch-icon" href="assert/icon.png">
 </head>
@@ -102,12 +107,12 @@
                 </a>
             </div>
             <div class="top-right links">
-                <span>国内站点>>></span>
+                <span>CN>></span>
                 <a href="https://iosoon.cn">首页</a>
                 <a href="https://notebook.iosoon.cn">笔记本</a>
             </div>
 
-            <div id="big-text" class="title m-b-md">功不唐捐，玉汝于成</div>
+            <div id="big-text" class="title">功不唐捐，玉汝于成</div>
 
             <div class="links">
                 <a class="github" target="_blank" href="https://github.com/soonio"><img width="20px" src="assert/github.svg" alt="github"></a>
