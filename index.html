@@ -119,7 +119,7 @@
                 <a target="_blank" href="https://notebook.iosoon.cn">notebook</a>
             </div>
 
-            <div id="big-text" class="title">功不唐捐，玉汝于成</div>
+            <div id="big-text" class="title"></div>
 
             <div class="links">
                 <a class="github" target="_blank" href="https://github.com/soonio"><img width="20px" src="assert/github.svg" alt="github"></a>
@@ -155,8 +155,10 @@
         ]
         const l = strings.length
         const element = document.getElementById("big-text")
-        let oi = 0
-        let lock = false
+        let oi = Math.ceil(Math.random() * (l - 1))
+
+        element.innerHTML = strings[oi]
+
         function random(oi) {
             let n = Math.ceil(Math.random() * (l - 1))
             if (oi === n) {
@@ -166,6 +168,7 @@
             }
         }
 
+        let lock = false
         setInterval(function () {
             if (lock) {
                 return
