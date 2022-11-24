@@ -8,7 +8,7 @@
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
 
-        gtag('config', 'G-9PYGV6J5WK');
+        gtag('config', 'G-9PYGV6J5WK', { 'debug_mode': true });
     </script>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -208,7 +208,7 @@
 
         const btn = document.getElementById('ql')
         btn.onclick = () => {
-            gtag('event', '点击姓名', { 'method': 'click' });
+            gtag('event', 'click_name', { 'method': 'click' });
         }
     </script>
 </body>
