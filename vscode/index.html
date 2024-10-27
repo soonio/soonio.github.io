@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visual Studio Code</title>
+    <style>
+        html,
+        body {
+            margin: 0;
+        }
+
+        /* #canvas {
+            border: 1px solid #ddd;
+        } */
+
+        .w {
+            width: calc(100vh * 3508/2479);
+            height: 100vh;
+            margin-left: calc((100vw - 100vh * 3508/2479)/2);
+        }
+
+        .h {
+            width: 100vw;
+            height: calc(100vw * 2479/3508);
+            margin-top: calc((100vh - 100vw * 2479/3508)/2);
+        }
+
+        .a4 {
+            width: 100vw;
+            height: 100vh
+        }
+
+        .btn {
+            position: fixed;
+            cursor: pointer;
+        }
+
+        #home {
+            bottom: 180px;
+            width: 30px;
+            height: 30px;
+            right: 42px;
+            /* background-color: rebeccapurple; */
+        }
+
+        #download {
+            bottom: 100px;
+            width: 30px;
+            height: 30px;
+            right: 40px;
+            /* background-color: rebeccapurple; */
+        }
+
+        #github {
+            right: 42px;
+            bottom: 140px;
+            width: 27px;
+            height: 27px;
+            /* background-color: rebeccapurple; */
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="canvas" width="3508" height="2479"> </canvas>
+    <img id="home" class="btn" title="HOME"
+        src="./home.svg" />
+    <img id="download" class="btn" title="下载"
+        src="./download.svg" />
+    <img id="github" class="btn" title="github"
+        src="./github.svg" />
+    <script>
+        const a4 = 3508 / 2479
+        const curr = window.innerWidth / window.innerHeight
+
+        const ele = document.getElementById('canvas')
+        if (curr > a4) {
+            ele.className = 'w'
+        } else if (curr < a4) {
+            ele.className = 'h'
+        }
+
+        let canvas = document.getElementById('canvas');
+        let ctx = canvas.getContext('2d');
+
+        ctx.fillStyle = 'white'
+        ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+        const img = new Image()
+        img.src = "./logo.svg"
+        img.onload = () => {
+            const size = 60
+            ctx.drawImage(img, 100, 100, 100 + size, 100 + size)
+        }
+
+        ctx.fillStyle = 'black'
+        ctx.font = "400 65px 'Arial', 'Microsoft YaHei', sans-serif";
+        ctx.fillText("Visual Studio Code", 300, 180);
+
+        ctx.font = "200 35px 'Arial', 'Microsoft YaHei', sans-serif";
+        ctx.fillText("Keyboard shortcuts for macOS", 300, 230);
+        ctx.font = "200 35px 'Arial', 'Microsoft YaHei', sans-serif";
+        ctx.fillText("aka.ms/vscodekeybindings", 2990, 2370);
+
+        // ctx.beginPath();
+        // ctx.moveTo(100, 100);
+        // ctx.lineTo(3408, 100);
+        // ctx.lineTo(3408, 2379);
+        // ctx.lineTo(100, 2379);
+        // ctx.closePath();
+        // ctx.strokeStyle = "#ddd";
+        // ctx.lineWidth = 2;
+        // ctx.stroke();
+
+        const render = (left, top, part) => {
+            const height = 50 * part.list.length
+
+            ctx.fillStyle = '#e6f4ff';
+            ctx.fillRect(left - 70, top, 70, height);
+            ctx.font = "400 35px 'Arial', 'Microsoft YaHei', '黑体', '宋体', sans-serif";
+
+            const chars = part.title.split('')
+            const p = (height - chars.length * 30) / 2
+            ctx.fillStyle = 'black';
+            chars.forEach((item, i) => {
+                ctx.fillText(item, left - 55, top + 40 * i + p);
+            })
+
+            ctx.font = "300 30px 'Arial', 'Microsoft YaHei', '黑体', '宋体', sans-serif";
+            part.list.forEach((item, i) => {
+                if (i % 2 == 0) {
+                    ctx.fillStyle = '#eee';
+                    ctx.fillRect(left, top, 900, 50);
+                }
+
+                top += 50
+                ctx.fillStyle = '#333';
+                ctx.fillText(item.key, left, top - 10);
+                ctx.fillText(item.caption, left + 400, top - 10);
+            });
+        }
+
+        fetch(`keyshort.json`, { method: 'GET', headers: { 'Accept': 'application/json' } })
+            .then(response => response.json())
+            .then(response => {
+                const group = [
+                    {
+                        left: 174, top: 337, padding: 64,
+                        part: ["General", "Editor management", "Display", "Navigation"]
+                    },
+                    {
+                        left: 1339, top: 100, padding: 64,
+                        part: ["Multi-cursor and selection", "Rich languages editing", "File management"]
+                    },
+                    {
+                        left: 2504, top: 100, padding: 64,
+                        part: ["Basic editing", "Search and replace", "Debug", "Integrated terminal"]
+                    }
+                ]
+
+                group.forEach(config => {
+                    config.part.forEach((name, i) => {
+                        config.top += (i ? config.padding : 0) + (config.part[i - 1] ? response[config.part[i - 1]].list.length : 0) * 50
+                        render(config.left, config.top, response[name])
+                    })
+                })
+
+
+            })
+
+        document.getElementById('download').addEventListener('click', () => {
+            const link = document.createElement('a');
+            link.href = canvas.toDataURL('image/jpeg');;
+            link.download = 'vscode-shortcuts-for-macos.jpeg';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        })
+        document.getElementById('github').addEventListener('click', () => window.open('https://github.com/soonio/vscode-shortcut', '_blank'))
+        document.getElementById('home').addEventListener('click', () => window.open('https://iosoon.cn', '_self'))
+    </script>
+</body>
+
+</html>
