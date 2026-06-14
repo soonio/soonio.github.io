@@ -1,0 +1,252 @@
+<!-- Q1-Q10 Go语言 -->
+
+<div class="q-card bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 fade-in" id="q1" data-cat="go" data-num="Q1" data-title="解释一下Go的GMP调度模型，G阻塞时M和P分别会怎样？" data-ans="Goroutine M P Processor GOMAXPROCS 工作窃取 抢占式 netpoller">
+  <button class="w-full text-left px-5 py-4 flex items-start gap-3" onclick="toggleA('q1')">
+    <span class="shrink-0 mt-0.5 px-2 py-0.5 rounded text-xs font-bold bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300">Q1</span>
+    <span class="flex-1 font-medium text-sm sm:text-base leading-relaxed">解释一下Go的GMP调度模型，G阻塞时M和P分别会怎样？</span>
+    <svg class="chevron w-5 h-5 shrink-0 mt-0.5 text-gray-400" id="ch-q1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div class="answer-content" id="ans-q1">
+    <div class="px-5 pb-5 space-y-3">
+      <div class="text-sm leading-relaxed prose dark:prose-invert max-w-none">
+        <p><strong>核心概念：</strong></p>
+        <ul class="list-disc pl-5 space-y-1">
+          <li><strong>G（Goroutine）</strong>：用户态轻量级协程，初始栈仅 2KB</li>
+          <li><strong>M（Machine）</strong>：内核级线程，与 OS 线程 1:1 映射</li>
+          <li><strong>P（Processor）</strong>：逻辑处理器，数量由 <code>GOMAXPROCS</code> 决定，维护本地 G 队列</li>
+        </ul>
+        <p class="mt-3"><strong>关键关系：</strong>M 必须绑定 P 才能执行 G。P 是 M 和 G 之间的桥梁。</p>
+        <div class="mermaid my-4">graph LR; A[Goroutine创建]-->B{P本地队列}; B-->|未满|C[加入P本地队列]; B-->|已满|D[加入全局队列]; C-->E[M绑定P]; E-->F[M从P取G执行]; F-->G{G阻塞?}; G-->|网络IO或文件|H[M阻塞,P解绑找新M]; G-->|channel或Mutex|I[M+G阻塞,P解绑找新M]; G-->|执行完毕|J[M取下一个G]; J-->|本地队列空|K[Work Stealing]</div>
+        <p class="mt-2"><strong>调度策略：</strong></p>
+        <ul class="list-disc pl-5 space-y-1">
+          <li><strong>工作窃取</strong>：空闲 P 从繁忙 P 的队列中偷一半 G</li>
+          <li><strong>抢占式调度</strong>：Go 1.14+ 基于信号的异步抢占</li>
+        </ul>
+        <p class="mt-2"><strong>G 阻塞时的行为：</strong></p>
+        <table class="w-full text-sm border-collapse border border-gray-300 dark:border-gray-600 mt-1">
+          <tr class="bg-gray-100 dark:bg-gray-700"><th class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">阻塞类型</th><th class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">M 行为</th><th class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">P 行为</th></tr>
+          <tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">网络IO/文件</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">交给 netpoller，M 休眠</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">P 解绑，找新 M 继续执行</td></tr>
+          <tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">channel/Mutex</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">M+G 一起阻塞</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">P 解绑，找新 M 继续执行</td></tr>
+        </table>
+      </div>
+      <div class="case-card rounded-lg p-3 mt-3"><p class="text-xs font-semibold text-emerald-700 dark:text-emerald-400 mb-1">💼 实际案例</p><p class="text-sm text-emerald-800 dark:text-emerald-300">SSE 服务 8 万并发连接，每个连接一个 goroutine，GMP 自动管理调度，8核CPU占用仅20%。</p></div>
+    </div>
+  </div>
+</div>
+
+<div class="q-card bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 fade-in" id="q2" data-cat="go" data-num="Q2" data-title="Go协程安全问题怎么处理？" data-ans="数据竞争 状态同步 sync.Mutex channel sync.Atomic sync.Map">
+  <button class="w-full text-left px-5 py-4 flex items-start gap-3" onclick="toggleA('q2')">
+    <span class="shrink-0 mt-0.5 px-2 py-0.5 rounded text-xs font-bold bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300">Q2</span>
+    <span class="flex-1 font-medium text-sm sm:text-base leading-relaxed">Go协程安全问题怎么处理？</span>
+    <svg class="chevron w-5 h-5 shrink-0 mt-0.5 text-gray-400" id="ch-q2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div class="answer-content" id="ans-q2">
+    <div class="px-5 pb-5 space-y-3">
+      <div class="text-sm leading-relaxed prose dark:prose-invert max-w-none">
+        <p>本质是并发编程中的<strong>数据竞争和状态同步</strong>问题：</p>
+        <table class="w-full text-sm border-collapse border border-gray-300 dark:border-gray-600 mt-2">
+          <tr class="bg-gray-100 dark:bg-gray-700"><th class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">方案</th><th class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">适用场景</th><th class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">特点</th></tr>
+          <tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5"><strong>sync.Mutex</strong></td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">共享资源读写保护</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">互斥锁，简单高效</td></tr>
+          <tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5"><strong>channel</strong></td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">goroutine 间通信</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">通过通信共享</td></tr>
+          <tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5"><strong>sync.Atomic</strong></td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">计数器、标志位</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">原子操作，无锁</td></tr>
+        </table>
+        <p class="mt-2"><strong>sync.Map vs Mutex+Map：</strong>sync.Map 适合读多写少；Mutex+Map 通用场景性能更好。</p>
+      </div>
+      <div class="case-card rounded-lg p-3 mt-3"><p class="text-xs font-semibold text-emerald-700 dark:text-emerald-400 mb-1">💼 实际案例</p><p class="text-sm text-emerald-800 dark:text-emerald-300">SSE 服务用 sync.Mutex + Map 管理连接池。早期用 sync.Map（集群方案），后换成 Mutex+Map（单机方案），性能更好。</p></div>
+    </div>
+  </div>
+</div>
+
+<div class="q-card bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 fade-in" id="q3" data-cat="go" data-num="Q3" data-title="Go中怎么实现协程超时控制？" data-ans="context.WithTimeout select time.After 超时控制">
+  <button class="w-full text-left px-5 py-4 flex items-start gap-3" onclick="toggleA('q3')">
+    <span class="shrink-0 mt-0.5 px-2 py-0.5 rounded text-xs font-bold bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300">Q3</span>
+    <span class="flex-1 font-medium text-sm sm:text-base leading-relaxed">Go中怎么实现协程超时控制？</span>
+    <svg class="chevron w-5 h-5 shrink-0 mt-0.5 text-gray-400" id="ch-q3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div class="answer-content" id="ans-q3">
+    <div class="px-5 pb-5 space-y-3">
+      <div class="text-sm leading-relaxed prose dark:prose-invert max-w-none">
+        <p><strong>方式一：context.WithTimeout（推荐）</strong></p>
+        <pre><code class="language-go">ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+defer cancel()
+select {
+case result := &lt;-doSomething(ctx):
+    // 正常处理
+case &lt;-ctx.Done():
+    return ctx.Err()
+}</code></pre>
+        <p class="mt-2"><strong>方式二：select + time.After</strong></p>
+        <pre><code class="language-go">select {
+case result := &lt;-ch:
+case &lt;-time.After(3 * time.Second):
+    // 超时
+}</code></pre>
+        <p class="mt-2">context 可沿调用链传递，子 goroutine 也能感知超时；time.After 简单但无法传递上下文。</p>
+      </div>
+      <div class="case-card rounded-lg p-3 mt-3"><p class="text-xs font-semibold text-emerald-700 dark:text-emerald-400 mb-1">💼 实际案例</p><p class="text-sm text-emerald-800 dark:text-emerald-300">SSE 服务用 context 控制连接生命周期，客户端断开后 context 取消通知 goroutine 退出。同时设置心跳超时。</p></div>
+    </div>
+  </div>
+</div>
+
+<div class="q-card bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 fade-in" id="q4" data-cat="go" data-num="Q4" data-title="channel有哪些使用场景？buffered和unbuffered有什么区别？" data-ans="channel buffered unbuffered 生产者消费者 信号传递 限流">
+  <button class="w-full text-left px-5 py-4 flex items-start gap-3" onclick="toggleA('q4')">
+    <span class="shrink-0 mt-0.5 px-2 py-0.5 rounded text-xs font-bold bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300">Q4</span>
+    <span class="flex-1 font-medium text-sm sm:text-base leading-relaxed">channel有哪些使用场景？buffered和unbuffered有什么区别？</span>
+    <svg class="chevron w-5 h-5 shrink-0 mt-0.5 text-gray-400" id="ch-q4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div class="answer-content" id="ans-q4">
+    <div class="px-5 pb-5 space-y-3">
+      <div class="text-sm leading-relaxed prose dark:prose-invert max-w-none">
+        <table class="w-full text-sm border-collapse border border-gray-300 dark:border-gray-600 mt-2">
+          <tr class="bg-gray-100 dark:bg-gray-700"><th class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">类型</th><th class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">创建</th><th class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">阻塞规则</th></tr>
+          <tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5"><strong>unbuffered</strong></td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5"><code>make(chan int)</code></td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">发送和接收必须同步</td></tr>
+          <tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5"><strong>buffered</strong></td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5"><code>make(chan int, 10)</code></td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">缓冲区满时发送阻塞</td></tr>
+        </table>
+        <p class="mt-2"><strong>经典场景：</strong>生产者-消费者、信号传递（chan struct{}）、数据流水线、限流控制</p>
+        <p class="mt-2"><strong>注意：</strong>只有发送方可关闭；不能关闭已关闭的 channel；关闭后仍可读取剩余数据。</p>
+      </div>
+      <div class="case-card rounded-lg p-3 mt-3"><p class="text-xs font-semibold text-emerald-700 dark:text-emerald-400 mb-1">💼 实际案例</p><p class="text-sm text-emerald-800 dark:text-emerald-300">SSE 服务每个连接对应一个 channel 接收消息推送，典型生产者-消费者模型。</p></div>
+    </div>
+  </div>
+</div>
+
+<div class="q-card bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 fade-in" id="q5" data-cat="go" data-num="Q5" data-title="slice的底层原理是什么？" data-ans="slice SliceHeader 底层数组 扩容 2倍 1.25倍">
+  <button class="w-full text-left px-5 py-4 flex items-start gap-3" onclick="toggleA('q5')">
+    <span class="shrink-0 mt-0.5 px-2 py-0.5 rounded text-xs font-bold bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300">Q5</span>
+    <span class="flex-1 font-medium text-sm sm:text-base leading-relaxed">slice的底层原理是什么？</span>
+    <svg class="chevron w-5 h-5 shrink-0 mt-0.5 text-gray-400" id="ch-q5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div class="answer-content" id="ans-q5">
+    <div class="px-5 pb-5 space-y-3">
+      <div class="text-sm leading-relaxed prose dark:prose-invert max-w-none">
+        <pre><code class="language-go">type SliceHeader struct {
+    Data uintptr // 指向底层数组
+    Len  int     // 当前长度
+    Cap  int     // 容量
+}</code></pre>
+        <ul class="list-disc pl-5 mt-2 space-y-1">
+          <li>slice 共享底层数组，修改一个可能影响另一个</li>
+          <li>append 时 cap 不够会分配新数组，原 slice 不变</li>
+          <li>扩容规则：cap&lt;256 → 2倍；cap>=256 → 1.25倍+192</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="q-card bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 fade-in" id="q6" data-cat="go" data-num="Q6" data-title="map的底层实现原理？" data-ans="map 哈希表 bucket 溢出桶 负载因子 扩容 sync.Mutex sync.Map">
+  <button class="w-full text-left px-5 py-4 flex items-start gap-3" onclick="toggleA('q6')">
+    <span class="shrink-0 mt-0.5 px-2 py-0.5 rounded text-xs font-bold bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300">Q6</span>
+    <span class="flex-1 font-medium text-sm sm:text-base leading-relaxed">map的底层实现原理？</span>
+    <svg class="chevron w-5 h-5 shrink-0 mt-0.5 text-gray-400" id="ch-q6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div class="answer-content" id="ans-q6">
+    <div class="px-5 pb-5 space-y-3">
+      <div class="text-sm leading-relaxed prose dark:prose-invert max-w-none">
+        <p><strong>底层是哈希表（bucket 数组 + 溢出桶）：</strong></p>
+        <ul class="list-disc pl-5 space-y-1">
+          <li>每个 bucket 最多存 8 个键值对</li>
+          <li>哈希冲突：链地址法，溢出桶链表扩展</li>
+          <li>负载因子 > 6.5 时渐进式扩容</li>
+          <li>并发读写会 panic</li>
+        </ul>
+        <p class="mt-2"><strong>并发安全方案：</strong>sync.Mutex+map（通用）、sync.Map（读多写少）、sync.RWMutex+map（读写分离）</p>
+      </div>
+      <div class="case-card rounded-lg p-3 mt-3"><p class="text-xs font-semibold text-emerald-700 dark:text-emerald-400 mb-1">💼 实际案例</p><p class="text-sm text-emerald-800 dark:text-emerald-300">SSE 连接管理用 map，key 是连接 ID，用 sync.Mutex 保证并发安全。</p></div>
+    </div>
+  </div>
+</div>
+
+<div class="q-card bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 fade-in" id="q7" data-cat="go" data-num="Q7" data-title="interface的原理是什么？" data-ans="interface eface iface 类型断言 类型switch 方法表">
+  <button class="w-full text-left px-5 py-4 flex items-start gap-3" onclick="toggleA('q7')">
+    <span class="shrink-0 mt-0.5 px-2 py-0.5 rounded text-xs font-bold bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300">Q7</span>
+    <span class="flex-1 font-medium text-sm sm:text-base leading-relaxed">interface的原理是什么？</span>
+    <svg class="chevron w-5 h-5 shrink-0 mt-0.5 text-gray-400" id="ch-q7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div class="answer-content" id="ans-q7">
+    <div class="px-5 pb-5 space-y-3">
+      <div class="text-sm leading-relaxed prose dark:prose-invert max-w-none">
+        <table class="w-full text-sm border-collapse border border-gray-300 dark:border-gray-600 mt-2">
+          <tr class="bg-gray-100 dark:bg-gray-700"><th class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">类型</th><th class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">结构</th><th class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">说明</th></tr>
+          <tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">空接口 <code>interface{}</code></td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">eface: {type, value}</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">可存任何类型</td></tr>
+          <tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">非空接口</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">iface: {itable, value}</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">itable 含类型信息和方法表</td></tr>
+        </table>
+        <pre><code class="language-go">v, ok := i.(Type)       // 类型断言
+switch v := i.(type) {} // 类型 switch</code></pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="q-card bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 fade-in" id="q8" data-cat="go" data-num="Q8" data-title="Go的GC算法是什么？" data-ans="三色标记 混合写屏障 STW 并发标记 并发清除 sync.Pool">
+  <button class="w-full text-left px-5 py-4 flex items-start gap-3" onclick="toggleA('q8')">
+    <span class="shrink-0 mt-0.5 px-2 py-0.5 rounded text-xs font-bold bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300">Q8</span>
+    <span class="flex-1 font-medium text-sm sm:text-base leading-relaxed">Go的GC算法是什么？</span>
+    <svg class="chevron w-5 h-5 shrink-0 mt-0.5 text-gray-400" id="ch-q8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div class="answer-content" id="ans-q8">
+    <div class="px-5 pb-5 space-y-3">
+      <div class="text-sm leading-relaxed prose dark:prose-invert max-w-none">
+        <p><strong>三色标记法 + 混合写屏障</strong>（Go 1.8+）</p>
+        <div class="mermaid my-4">graph LR; A["白色:未标记"]-->|扫描|B["灰色:待扫描"]; B-->|完成|C["黑色:已扫描"]; C-->|清除|D[回收白色对象]</div>
+        <ol class="list-decimal pl-5 space-y-1">
+          <li><strong>标记准备</strong>：STW，开启写屏障</li>
+          <li><strong>并发标记</strong>：从 root 遍历对象图，与用户 goroutine 并发</li>
+          <li><strong>清除</strong>：回收白色对象，并发执行</li>
+        </ol>
+        <p class="mt-2">写屏障保证标记过程中引用变化不会导致误回收。Go 1.8+ 混合写屏障减少 STW。</p>
+      </div>
+      <div class="case-card rounded-lg p-3 mt-3"><p class="text-xs font-semibold text-emerald-700 dark:text-emerald-400 mb-1">💼 实际案例</p><p class="text-sm text-emerald-800 dark:text-emerald-300">8 万连接对象对 GC 有影响。优化：减少临时对象分配、使用 sync.Pool 复用。</p></div>
+    </div>
+  </div>
+</div>
+
+<div class="q-card bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 fade-in" id="q9" data-cat="go" data-num="Q9" data-title="defer的执行顺序？" data-ans="defer 后进先出 LIFO 参数预计算 return">
+  <button class="w-full text-left px-5 py-4 flex items-start gap-3" onclick="toggleA('q9')">
+    <span class="shrink-0 mt-0.5 px-2 py-0.5 rounded text-xs font-bold bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300">Q9</span>
+    <span class="flex-1 font-medium text-sm sm:text-base leading-relaxed">defer的执行顺序？</span>
+    <svg class="chevron w-5 h-5 shrink-0 mt-0.5 text-gray-400" id="ch-q9" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div class="answer-content" id="ans-q9">
+    <div class="px-5 pb-5 space-y-3">
+      <div class="text-sm leading-relaxed prose dark:prose-invert max-w-none">
+        <ul class="list-disc pl-5 space-y-1">
+          <li><strong>后进先出（LIFO）</strong></li>
+          <li><strong>参数预计算</strong>：defer 参数在声明时确定</li>
+          <li><strong>与 return</strong>：先 return 赋值 → 再 defer → 最后 RET</li>
+        </ul>
+        <pre><code class="language-go">func foo() (result int) {
+    defer func() { result = 10 }()
+    return 1 // 最终返回 10
+}</code></pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="q-card bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 fade-in" id="q10" data-cat="go" data-num="Q10" data-title="sync.Pool的原理和使用场景？" data-ans="sync.Pool 对象池 复用 临时对象 GC Get Put">
+  <button class="w-full text-left px-5 py-4 flex items-start gap-3" onclick="toggleA('q10')">
+    <span class="shrink-0 mt-0.5 px-2 py-0.5 rounded text-xs font-bold bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300">Q10</span>
+    <span class="flex-1 font-medium text-sm sm:text-base leading-relaxed">sync.Pool的原理和使用场景？</span>
+    <svg class="chevron w-5 h-5 shrink-0 mt-0.5 text-gray-400" id="ch-q10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div class="answer-content" id="ans-q10">
+    <div class="px-5 pb-5 space-y-3">
+      <div class="text-sm leading-relaxed prose dark:prose-invert max-w-none">
+        <ul class="list-disc pl-5 space-y-1">
+          <li>对象池，复用临时对象，减少 GC 压力</li>
+          <li><code>Get()</code> 获取，<code>Put()</code> 归还</li>
+          <li>GC 时清空池中对象</li>
+          <li>每个 P 有本地 pool，减少锁竞争</li>
+        </ul>
+        <pre><code class="language-go">var pool = sync.Pool{
+    New: func() interface{} { return new(bytes.Buffer) },
+}
+buf := pool.Get().(*bytes.Buffer)
+buf.Reset()
+defer pool.Put(buf)</code></pre>
+      </div>
+      <div class="case-card rounded-lg p-3 mt-3"><p class="text-xs font-semibold text-emerald-700 dark:text-emerald-400 mb-1">💼 实际案例</p><p class="text-sm text-emerald-800 dark:text-emerald-300">可用于 SSE 消息对象复用，减少 GC 压力。</p></div>
+    </div>
+  </div>
+</div>

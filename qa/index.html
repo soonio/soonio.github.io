@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>面试题库 - 一股清流</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/lua.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>tailwind.config={darkMode:'class',theme:{extend:{colors:{primary:'#2563eb',accent:'#10b981'}}}}</script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+    body{font-family:'Noto Sans SC','Inter',sans-serif}
+    .q-card{transition:all .3s ease}.q-card:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(0,0,0,.1)}
+    .answer-content{max-height:0;overflow:hidden;transition:max-height .5s ease-out}.answer-content.open{max-height:10000px}
+    .chevron{transition:transform .3s ease}.chevron.rotated{transform:rotate(180deg)}
+    .sidebar-link{transition:all .2s ease;font-size:.8rem}.sidebar-link:hover,.sidebar-link.active{background:rgba(37,99,235,.1);color:#2563eb;border-left:3px solid #2563eb}
+    .dark .sidebar-link:hover,.dark .sidebar-link.active{background:rgba(96,165,250,.15);color:#60a5fa;border-left-color:#60a5fa}
+    .case-card{border-left:4px solid #10b981;background:linear-gradient(135deg,#ecfdf5 0%,#f0fdf4 100%)}
+    .dark .case-card{background:linear-gradient(135deg,#064e3b33 0%,#065f4633 100%);border-left-color:#34d399}
+    pre code{border-radius:8px;font-size:.875rem}
+    .mermaid{display:flex;justify-content:center;margin:1rem 0}.mermaid svg{max-width:100%}
+    ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}
+    .dark ::-webkit-scrollbar-thumb{background:#475569}
+    .fade-in{animation:fadeIn .3s ease-in}@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+    #sidebar{transition:transform .3s ease}
+    @media(max-width:1024px){#sidebar{position:fixed;z-index:40;transform:translateX(-100%)}#sidebar.open{transform:translateX(0)}}
+    .cat-btn.active{background:#2563eb!important;color:#fff!important}
+    .loading-spinner{display:flex;justify-content:center;padding:4rem}.loading-spinner::after{content:'';width:2rem;height:2rem;border:3px solid #e5e7eb;border-top-color:#2563eb;border-radius:50%;animation:spin .6s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+  </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200 transition-colors duration-300">
+<!-- NAV -->
+<nav class="fixed top-0 left-0 right-0 z-50 bg-white/90 dark:bg-gray-800/90 backdrop-blur-md border-b border-gray-200 dark:border-gray-700">
+  <div class="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between gap-3">
+    <div class="flex items-center gap-3 shrink-0">
+      <button class="lg:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700" onclick="toggleSidebar()"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+      <h1 class="text-lg font-bold bg-gradient-to-r from-blue-600 to-emerald-500 bg-clip-text text-transparent">📘 面试题库</h1>
+      <span class="hidden sm:inline text-xs text-gray-400">55题 · 8大分类</span>
+    </div>
+    <div class="flex items-center gap-2 flex-1 max-w-md">
+      <div class="relative flex-1"><input id="searchInput" type="text" placeholder="搜索题目..." class="w-full pl-9 pr-3 py-1.5 text-sm rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"><svg class="absolute left-3 top-2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg></div>
+      <button onclick="toggleDark()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"><span class="dark:hidden">🌙</span><span class="hidden dark:inline">☀️</span></button>
+      <button onclick="toggleAll()" id="toggleAllBtn" class="hidden sm:inline-block text-xs px-3 py-1.5 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-100 whitespace-nowrap">全部展开</button>
+    </div>
+  </div>
+  <div class="max-w-7xl mx-auto px-4 pb-2 flex gap-2 overflow-x-auto text-xs" id="tagBar">
+    <button onclick="filterCat('all',this)" class="cat-btn active px-3 py-1 rounded-full whitespace-nowrap">全部</button>
+    <button onclick="filterCat('go',this)" class="cat-btn px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-700 whitespace-nowrap">🔵 Go语言</button>
+    <button onclick="filterCat('mysql',this)" class="cat-btn px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-700 whitespace-nowrap">🟢 MySQL</button>
+    <button onclick="filterCat('redis',this)" class="cat-btn px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-700 whitespace-nowrap">🔴 Redis</button>
+    <button onclick="filterCat('web',this)" class="cat-btn px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-700 whitespace-nowrap">🟡 Web开发</button>
+    <button onclick="filterCat('dist',this)" class="cat-btn px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-700 whitespace-nowrap">🟣 分布式</button>
+    <button onclick="filterCat('project',this)" class="cat-btn px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-700 whitespace-nowrap">🟠 项目相关</button>
+    <button onclick="filterCat('arch',this)" class="cat-btn px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-700 whitespace-nowrap">🔷 微服务</button>
+    <button onclick="filterCat('perf',this)" class="cat-btn px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-700 whitespace-nowrap">⚡ 性能调优</button>
+  </div>
+</nav>
+<div id="sidebarOverlay" class="fixed inset-0 bg-black/30 z-30 hidden lg:hidden" onclick="toggleSidebar()"></div>
+<aside id="sidebar" class="fixed top-24 left-0 bottom-0 w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-y-auto z-40 hidden lg:block"><div class="p-3"><div id="tocList" class="space-y-0.5"></div></div></aside>
+<main class="lg:ml-64 pt-28 pb-20 px-4 max-w-4xl mx-auto">
+  <div id="questionList" class="space-y-4"><div class="loading-spinner"></div></div>
+  <div id="noResult" class="hidden text-center py-20 text-gray-400"><p class="text-4xl mb-4">🔍</p><p>没有找到匹配的题目</p></div>
+</main>
+<button id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" class="fixed bottom-6 right-6 w-10 h-10 rounded-full bg-blue-600 text-white shadow-lg flex items-center justify-center opacity-0 pointer-events-none transition-all hover:bg-blue-700 z-50"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg></button>
+<script>
+mermaid.initialize({startOnLoad:false,theme:'default',securityLevel:'loose'});
+
+// ===== 题目文件映射（新增分类只需加一行） =====
+const Q_FILES={
+  go:'questions/go.html',
+  mysql:'questions/mysql.html',
+  redis:'questions/redis.html',
+  web:'questions/web.html',
+  dist:'questions/dist.html',
+  project:'questions/project.html',
+  arch:'questions/arch.html',
+  perf:'questions/perf.html'
+};
+
+let allOpen=false,curCat='all';
+const $list=document.getElementById('questionList');
+const $toc=document.getElementById('tocList');
+const $noR=document.getElementById('noResult');
+
+// ===== 加载所有题目文件 =====
+async function loadQuestions(){
+  try{
+    const res=await Promise.all(Object.values(Q_FILES).map(f=>fetch(f).then(r=>{if(!r.ok)throw new Error(f);return r.text()})));
+    $list.innerHTML=res.join('\n');
+    initPlugins();
+    buildSidebar();
+  }catch(e){console.error('加载题目失败:',e);$list.innerHTML='<p class="text-center text-red-500 py-10">加载失败，请刷新重试</p>'}
+}
+
+function initPlugins(){
+  document.querySelectorAll('#questionList pre code').forEach(b=>hljs.highlightElement(b));
+  const mn=document.querySelectorAll('#questionList .mermaid');
+  if(mn.length)mermaid.run({nodes:mn}).catch(e=>console.warn('mermaid:',e));
+}
+
+function buildSidebar(){
+  let h='';
+  document.querySelectorAll('.q-card').forEach(el=>{
+    if(el.style.display==='none')return;
+    const id=el.id,num=el.dataset.num,title=el.dataset.title;
+    const t=title.length>22?title.slice(0,22)+'...':title;
+    h+=`<a href="#${id}" class="sidebar-link block px-3 py-1.5 rounded-r text-gray-600 dark:text-gray-400 truncate" onclick="navTo('${id}')"><span class="text-blue-500 mr-1">${num}</span>${t}</a>`;
+  });
+  $toc.innerHTML=h;
+}
+
+// ===== 交互 =====
+function toggleA(id){
+  const el=document.getElementById('ans-'+id),ch=document.getElementById('ch-'+id);
+  el.classList.toggle('open');ch.classList.toggle('rotated');
+}
+
+function toggleAll(){
+  allOpen=!allOpen;
+  document.getElementById('toggleAllBtn').textContent=allOpen?'全部折叠':'全部展开';
+  document.querySelectorAll('.q-card').forEach(card=>{
+    if(card.style.display==='none')return;
+    const ans=card.querySelector('.answer-content'),chev=card.querySelector('.chevron');
+    if(ans&&chev){ans.classList.toggle('open',allOpen);chev.classList.toggle('rotated',allOpen)}
+  });
+}
+
+function filterCat(c,btn){
+  curCat=c;
+  document.querySelectorAll('.cat-btn').forEach(b=>{b.classList.remove('active');b.classList.add('bg-gray-100','dark:bg-gray-700')});
+  btn.classList.add('active');btn.classList.remove('bg-gray-100','dark:bg-gray-700');
+  applyFilters();
+}
+
+function applyFilters(){
+  const kw=document.getElementById('searchInput').value.toLowerCase();
+  let vis=0;
+  document.querySelectorAll('.q-card').forEach(card=>{
+    const cat=card.dataset.cat,title=card.dataset.title||'',ans=card.dataset.ans||'';
+    let show=true;
+    if(curCat!=='all'&&cat!==curCat)show=false;
+    if(kw&&!title.toLowerCase().includes(kw)&&!ans.toLowerCase().includes(kw))show=false;
+    card.style.display=show?'':'none';
+    if(show)vis++;
+  });
+  $noR.classList.toggle('hidden',vis>0);
+  buildSidebar();
+}
+
+function navTo(id){
+  document.getElementById(id)?.scrollIntoView({behavior:'smooth',block:'start'});
+  if(window.innerWidth<1024)toggleSidebar();
+}
+
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('hidden');
+}
+
+function toggleDark(){
+  document.documentElement.classList.toggle('dark');
+  localStorage.setItem('dark',document.documentElement.classList.contains('dark'));
+}
+
+// ===== 事件 =====
+document.getElementById('searchInput').addEventListener('input',()=>applyFilters());
+window.addEventListener('scroll',()=>{
+  const btn=document.getElementById('backTop');
+  if(window.scrollY>300){btn.classList.remove('opacity-0','pointer-events-none');btn.classList.add('opacity-100')}
+  else{btn.classList.add('opacity-0','pointer-events-none');btn.classList.remove('opacity-100')}
+});
+
+// ===== 初始化 =====
+if(localStorage.getItem('dark')==='true')document.documentElement.classList.add('dark');
+loadQuestions();
+</script>
+</body>
+</html>

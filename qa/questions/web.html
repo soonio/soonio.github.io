@@ -1,0 +1,44 @@
+<!-- Q27-Q30 Web开发 -->
+
+<div class="q-card bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 fade-in" id="q27" data-cat="web" data-num="Q27" data-title="布隆过滤器是什么？" data-ans="布隆过滤器 二进制向量 哈希函数 缓存穿透 黑名单">
+  <button class="w-full text-left px-5 py-4 flex items-start gap-3" onclick="toggleA('q27')"><span class="shrink-0 mt-0.5 px-2 py-0.5 rounded text-xs font-bold bg-yellow-100 dark:bg-yellow-900/40 text-yellow-700 dark:text-yellow-300">Q27</span><span class="flex-1 font-medium text-sm sm:text-base leading-relaxed">布隆过滤器是什么？</span><svg class="chevron w-5 h-5 shrink-0 mt-0.5 text-gray-400" id="ch-q27" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button>
+  <div class="answer-content" id="ans-q27"><div class="px-5 pb-5 space-y-3"><div class="text-sm leading-relaxed prose dark:prose-invert max-w-none">
+    <ul class="list-disc pl-5 space-y-1">
+      <li><strong>原理</strong>：二进制向量 + 多个哈希函数，快速判断元素是否存在</li>
+      <li>返回"不存在"→ 一定不存在；返回"存在"→ 可能存在（有误判率）</li>
+      <li>不能删除、不能遍历</li>
+      <li><strong>场景</strong>：缓存穿透拦截、黑名单过滤</li>
+    </ul>
+  </div></div></div>
+</div>
+
+<div class="q-card bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 fade-in" id="q28" data-cat="web" data-num="Q28" data-title="令牌桶和漏桶的区别？" data-ans="令牌桶 漏桶 限流 突发流量 平滑 go-zero">
+  <button class="w-full text-left px-5 py-4 flex items-start gap-3" onclick="toggleA('q28')"><span class="shrink-0 mt-0.5 px-2 py-0.5 rounded text-xs font-bold bg-yellow-100 dark:bg-yellow-900/40 text-yellow-700 dark:text-yellow-300">Q28</span><span class="flex-1 font-medium text-sm sm:text-base leading-relaxed">令牌桶和漏桶的区别？</span><svg class="chevron w-5 h-5 shrink-0 mt-0.5 text-gray-400" id="ch-q28" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button>
+  <div class="answer-content" id="ans-q28"><div class="px-5 pb-5 space-y-3"><div class="text-sm leading-relaxed prose dark:prose-invert max-w-none">
+    <table class="w-full text-sm border-collapse border border-gray-300 dark:border-gray-600 mt-2"><tr class="bg-gray-100 dark:bg-gray-700"><th class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">算法</th><th class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">原理</th><th class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">特点</th></tr><tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5"><strong>令牌桶</strong></td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">固定速率放令牌，有令牌才能处理</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">允许突发流量</td></tr><tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5"><strong>漏桶</strong></td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">固定速率流出</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">平滑流量，不允许突发</td></tr></table>
+    <p class="mt-2">go-zero 内置限流基于令牌桶。</p>
+  </div><div class="case-card rounded-lg p-3 mt-3"><p class="text-xs font-semibold text-emerald-700 dark:text-emerald-400 mb-1">💼 实际案例</p><p class="text-sm text-emerald-800 dark:text-emerald-300">活动期间用 go-zero 内置限流保护核心接口。</p></div></div></div>
+</div>
+
+<div class="q-card bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 fade-in" id="q29" data-cat="web" data-num="Q29" data-title="熔断机制是什么？go-zero的熔断是怎么工作的？" data-ans="熔断 Closed Open Half-Open 自适应 breaker 滑动窗口">
+  <button class="w-full text-left px-5 py-4 flex items-start gap-3" onclick="toggleA('q29')"><span class="shrink-0 mt-0.5 px-2 py-0.5 rounded text-xs font-bold bg-yellow-100 dark:bg-yellow-900/40 text-yellow-700 dark:text-yellow-300">Q29</span><span class="flex-1 font-medium text-sm sm:text-base leading-relaxed">熔断机制是什么？go-zero的熔断是怎么工作的？</span><svg class="chevron w-5 h-5 shrink-0 mt-0.5 text-gray-400" id="ch-q29" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button>
+  <div class="answer-content" id="ans-q29"><div class="px-5 pb-5 space-y-3"><div class="text-sm leading-relaxed prose dark:prose-invert max-w-none">
+    <p>服务调用失败率达到阈值时自动熔断，避免雪崩。</p>
+    <div class="mermaid my-4">graph LR; A[Closed正常]-->|失败率超阈值|B[Open熔断]; B-->|冷却期结束|C[Half-Open试探]; C-->|成功|A; C-->|失败|B</div>
+    <p class="mt-2"><strong>go-zero 自适应熔断器：</strong></p>
+    <ul class="list-disc pl-5 space-y-1">
+      <li>基于滑动窗口统计成功率和响应时间</li>
+      <li>失败率超阈值自动触发熔断，快速失败</li>
+      <li>Half-Open 状态尝试放一个请求</li>
+      <li>不需要手动配置阈值，自适应调整</li>
+    </ul>
+  </div></div></div>
+</div>
+
+<div class="q-card bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 fade-in" id="q30" data-cat="web" data-num="Q30" data-title="JWT的优缺点？" data-ans="JWT Header Payload Signature 无状态 跨域 Token 刷新 黑名单">
+  <button class="w-full text-left px-5 py-4 flex items-start gap-3" onclick="toggleA('q30')"><span class="shrink-0 mt-0.5 px-2 py-0.5 rounded text-xs font-bold bg-yellow-100 dark:bg-yellow-900/40 text-yellow-700 dark:text-yellow-300">Q30</span><span class="flex-1 font-medium text-sm sm:text-base leading-relaxed">JWT的优缺点？</span><svg class="chevron w-5 h-5 shrink-0 mt-0.5 text-gray-400" id="ch-q30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button>
+  <div class="answer-content" id="ans-q30"><div class="px-5 pb-5 space-y-3"><div class="text-sm leading-relaxed prose dark:prose-invert max-w-none">
+    <p><strong>结构</strong>：Header.Payload.Signature（三段式 Base64）</p>
+    <table class="w-full text-sm border-collapse border border-gray-300 dark:border-gray-600 mt-2"><tr class="bg-gray-100 dark:bg-gray-700"><th class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">优点</th><th class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">缺点</th></tr><tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">无状态、可跨域、不需要存 Session</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">无法主动失效、Token 泄露风险</td></tr></table>
+  </div><div class="case-card rounded-lg p-3 mt-3"><p class="text-xs font-semibold text-emerald-700 dark:text-emerald-400 mb-1">💼 实际案例</p><p class="text-sm text-emerald-800 dark:text-emerald-300">用户中心基于 JWT 实现 Token 管理，支持多端登录、Token 刷新、黑名单机制。</p></div></div></div>
+</div>
