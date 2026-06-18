@@ -9,6 +9,12 @@
       <li>不是所有服务都部署在 K8S 上，所以用 etcd 而不是 K8S Service</li>
       <li>每个服务保持可集群扩展的能力，随时可以增加副本</li>
     </ul>
+    <p class="mt-2"><strong>补充：服务发现细节</strong>：</p>
+    <ul class="list-disc pl-5 space-y-1">
+      <li><strong>健康检查</strong>：服务实例定期发送心跳（TTL 机制），etcd 自动剔除不健康实例</li>
+      <li><strong>Watch 机制</strong>：客户端 Watch etcd 的 key 变化，实时感知服务上下线</li>
+      <li><strong>本地缓存</strong>：客户端缓存服务列表，避免每次调用都查询 etcd，降低延迟</li>
+    </ul>
   </div></div></div>
 </div>
 
@@ -23,6 +29,8 @@
       <li><strong>超时控制</strong>：服务间调用设置超时时间，防止级联故障</li>
       <li><strong>重试</strong>：调用失败自动重试，提高可用性</li>
     </ul>
+    <p class="mt-2"><strong>补充：重试风暴</strong>：重试可能导致请求放大，需配合指数退避 + 抖动策略，避免雪崩。go-zero 内置自适应重试。</p>
+    <p class="mt-2"><strong>灰度发布</strong>：基于请求头或用户 ID 路由到灰度实例，逐步放量，降低发布风险。</p>
   </div></div></div>
 </div>
 
@@ -42,6 +50,14 @@
       <li><strong>配置同步</strong>：用 ConfigMap 统一管理，修改后重新部署生效</li>
       <li><strong>实例扩缩容</strong>：基于 etcd 自动注册新实例</li>
     </ul>
+    <p class="mt-2"><strong>补充：CI/CD 流程</strong>：</p>
+    <ol class="list-decimal pl-5 space-y-1">
+      <li>代码提交 → GitLab CI 触发构建</li>
+      <li>Docker 镜像构建 → 推送镜像仓库</li>
+      <li>K8S 滚动更新（Rolling Update），逐步替换旧实例</li>
+      <li>健康检查通过后继续下一批，失败自动回滚</li>
+    </ol>
+    <p class="mt-2"><strong>部署策略</strong>：滚动更新（零停机）为主，重要服务用蓝绿部署（双版本并行，一键切换）。</p>
   </div></div></div>
 </div>
 
@@ -54,6 +70,8 @@
       <li>多个服务通过 Redis 共享认证状态，不需要 Session 复制</li>
       <li>Token 过期后自动失效，支持主动注销（删除 Redis 中的 Token）</li>
     </ul>
+    <p class="mt-2"><strong>补充：Token 刷新机制</strong>：Access Token 短效（15min），Refresh Token 长效（7天），Access 过期后用 Refresh 获取新 Token。</p>
+    <p class="mt-2"><strong>多端登录</strong>：每个设备生成独立 Token，存储到 Redis Hash 中，支持查看在线设备列表并强制下线。</p>
   </div></div></div>
 </div>
 
@@ -75,6 +93,15 @@
       <li>定位具体代码问题</li>
     </ol>
     <p class="mt-2"><strong>工具链：</strong>OpenTelemetry 链路追踪 + Prometheus 监控告警 + Promtail/Loki 日志</p>
+    <p class="mt-2"><strong>补充：排查方法论</strong>：</p>
+    <ol class="list-decimal pl-5 space-y-1">
+      <li><strong>确认范围</strong>：影响哪些服务、哪些接口、影响面多大</li>
+      <li><strong>定位链路</strong>：通过 traceID 找到完整调用链，定位慢/失败的节点</li>
+      <li><strong>查看日志</strong>：根据 traceID 和时间范围过滤日志，找到错误信息</li>
+      <li><strong>分析原因</strong>：DB 慢查询？下游超时？资源不足？</li>
+      <li><strong>修复验证</strong>：修复后观察监控指标是否恢复正常</li>
+    </ol>
+    <p class="mt-2"><strong>On-call 流程</strong>：告警 → 确认影响 → 快速止血（回滚/降级）→ 根因分析 → 复盘改进。</p>
   </div></div></div>
 </div>
 
@@ -99,6 +126,12 @@
       <li>下单成功后发消息，消费者异步处理后续操作</li>
       <li>失败自动重试，保证最终一致性</li>
       <li>优点：解耦服务、削峰填谷、性能更好</li>
+    </ul>
+    <p class="mt-2"><strong>补充：消息可靠性保障</strong>：</p>
+    <ul class="list-disc pl-5 space-y-1">
+      <li>生产者发送消息后等待 Broker 确认（ACK），失败重试</li>
+      <li>消费者处理完成后手动提交 offset，未提交的消息会被重新消费</li>
+      <li>业务层保证幂等性，重复消费不会产生副作用</li>
     </ul>
   </div></div></div>
 </div>

@@ -4,6 +4,13 @@
   <button class="w-full text-left px-5 py-4 flex items-start gap-3" onclick="toggleA('q33')"><span class="shrink-0 mt-0.5 px-2 py-0.5 rounded text-xs font-bold bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-300">Q33</span><span class="flex-1 font-medium text-sm sm:text-base leading-relaxed">为什么选SSE而不是WebSocket？</span><svg class="chevron w-5 h-5 shrink-0 mt-0.5 text-gray-400" id="ch-q33" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button>
   <div class="answer-content" id="ans-q33"><div class="px-5 pb-5 space-y-3"><div class="text-sm leading-relaxed prose dark:prose-invert max-w-none">
     <p>业务只需要<strong>服务端单向推送</strong>（消息通知、活动推送），SSE 更轻量，自带重连机制，基于 HTTP 协议更易部署。WebSocket 适合双向通信场景，我们不需要。</p>
+    <p class="mt-2"><strong>补充：SSE 协议细节</strong>：</p>
+    <ul class="list-disc pl-5 space-y-1">
+      <li>基于 HTTP 长连接，<code>Content-Type: text/event-stream</code></li>
+      <li>自带 <code>Last-Event-ID</code> 支持断线重连，自动恢复未接收的消息</li>
+      <li>数据格式简单（<code>data: xxx\n\n</code>），不需要额外协议解析</li>
+    </ul>
+    <p class="mt-2"><strong>对比长轮询</strong>：长轮询每次连接超时后需重新建立，服务端无法主动推送；SSE 保持长连接，服务端可随时推送。</p>
   </div></div></div>
 </div>
 
@@ -15,6 +22,13 @@
       <li>服务端定时轮询 Map 发送心跳消息，检测连接状态</li>
       <li>客户端断开后通过 context 取消通知 goroutine 退出</li>
       <li>8核CPU占用仅20%，内存最多3.5G</li>
+    </ul>
+    <p class="mt-2"><strong>补充：连接管理细节</strong>：</p>
+    <ul class="list-disc pl-5 space-y-1">
+      <li><strong>文件描述符</strong>：每个连接占用一个 fd，需调整系统 <code>ulimit -n</code> 和 K8S 资源限制</li>
+      <li><strong>内存计算</strong>：每个 goroutine 初始栈 2KB + 连接缓冲区，8 万连接约 3-4G</li>
+      <li><strong>优雅关闭</strong>：收到 SIGTERM 后停止接受新连接，等待现有连接处理完毕或超时强制关闭</li>
+      <li><strong>心跳机制</strong>：服务端定时发送心跳（如 30s），客户端超时未收到则重连</li>
     </ul>
   </div></div></div>
 </div>
@@ -38,6 +52,14 @@
       <li><strong>方案</strong>：内存缓存商品列表和商品详情，其他能缓存的接口也用内存缓存</li>
       <li><strong>效果</strong>：成功支撑活动期间超2万QPS</li>
     </ul>
+    <p class="mt-2"><strong>补充：完整高 QPS 方案</strong>：</p>
+    <ul class="list-disc pl-5 space-y-1">
+      <li><strong>多级缓存</strong>：本地内存缓存（热点数据）→ Redis 缓存（温数据）→ MySQL（冷数据）</li>
+      <li><strong>负载均衡</strong>：Nginx/Ingress 轮询分发，多实例横向扩展</li>
+      <li><strong>连接池</strong>：数据库和 Redis 连接池复用，减少连接创建开销</li>
+      <li><strong>异步化</strong>：非核心链路异步处理（如日志、通知），减少响应时间</li>
+      <li><strong>降级策略</strong>：活动期间关闭非核心功能，保证核心链路稳定</li>
+    </ul>
   </div></div></div>
 </div>
 
@@ -49,6 +71,14 @@
       <li>GORM 中间件自动注入 tenant_id 条件</li>
       <li>联合索引 tenant_id 放最左边</li>
     </ul>
+    <p class="mt-2"><strong>补充：三种隔离模型对比</strong>：</p>
+    <table class="w-full text-sm border-collapse border border-gray-300 dark:border-gray-600 mt-1">
+      <tr class="bg-gray-100 dark:bg-gray-700"><th class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">模型</th><th class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">隔离性</th><th class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">成本</th></tr>
+      <tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">独立数据库</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">最强</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">最高（资源浪费）</td></tr>
+      <tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">共享库独立 Schema</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">中等</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">中等</td></tr>
+      <tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5"><strong>共享库共享 Schema（我们）</strong></td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">逻辑隔离</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">最低</td></tr>
+    </table>
+    <p class="mt-2">我们选择共享库+tenant_id，成本低、运维简单，配合 GORM 中间件保证数据隔离安全。</p>
   </div></div></div>
 </div>
 
@@ -56,6 +86,12 @@
   <button class="w-full text-left px-5 py-4 flex items-start gap-3" onclick="toggleA('q38')"><span class="shrink-0 mt-0.5 px-2 py-0.5 rounded text-xs font-bold bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-300">Q38</span><span class="flex-1 font-medium text-sm sm:text-base leading-relaxed">为什么用go-zero？</span><svg class="chevron w-5 h-5 shrink-0 mt-0.5 text-gray-400" id="ch-q38" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button>
   <div class="answer-content" id="ans-q38"><div class="px-5 pb-5 space-y-3"><div class="text-sm leading-relaxed prose dark:prose-invert max-w-none">
     <p>go-zero 内置服务治理、限流熔断、服务发现等能力，开箱即用。相比自己封装，开发效率高，社区活跃。</p>
+    <p class="mt-2"><strong>补充：与 Kratos 对比</strong>：</p>
+    <ul class="list-disc pl-5 space-y-1">
+      <li>go-zero：内置服务治理、代码生成、限流熔断，开箱即用，适合快速开发</li>
+      <li>Kratos：更灵活的插件体系，gRPC 生态更好，适合大型团队定制</li>
+      <li>选择 go-zero 主要因为团队规模小，开箱即用的能力更重要</li>
+    </ul>
   </div></div></div>
 </div>
 
@@ -63,5 +99,13 @@
   <button class="w-full text-left px-5 py-4 flex items-start gap-3" onclick="toggleA('q39')"><span class="shrink-0 mt-0.5 px-2 py-0.5 rounded text-xs font-bold bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-300">Q39</span><span class="flex-1 font-medium text-sm sm:text-base leading-relaxed">为什么选K3S而不是K8S？</span><svg class="chevron w-5 h-5 shrink-0 mt-0.5 text-gray-400" id="ch-q39" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button>
   <div class="answer-content" id="ans-q39"><div class="px-5 pb-5 space-y-3"><div class="text-sm leading-relaxed prose dark:prose-invert max-w-none">
     <p>K3S 更轻量，资源占用少，适合小规模部署。对于小布在家这种初创项目，K3S 足够满足需求，运维成本也更低。</p>
+    <p class="mt-2"><strong>补充：K3S 与 K8S 具体差异</strong>：</p>
+    <ul class="list-disc pl-5 space-y-1">
+      <li>etcd 替换为 SQLite，减少资源占用</li>
+      <li>移除了 alpha/beta 特性和云提供商插件</li>
+      <li>单二进制文件，部署升级更简单</li>
+      <li>内存占用约 512MB（K8S 需 2GB+）</li>
+      <li>功能完全兼容 K8S API，迁移成本低</li>
+    </ul>
   </div></div></div>
 </div>

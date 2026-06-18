@@ -21,6 +21,8 @@
     <pre><code class="language-lua">if redis.call("get",KEYS[1]) == ARGV[1] then
     return redis.call("del",KEYS[1])
 end</code></pre>
+    <p class="mt-2"><strong>Fencing Token（防护令牌）</strong>：每次加锁时 Redis 返回单调递增的值（如版本号），资源方拒绝过期 token 的请求，可解决锁过期后的安全问题。</p>
+    <p class="mt-2"><strong>Redlock 争议</strong>：Martin Kleppa 指出 Redlock 在时钟跳跃场景下不安全。实际项目中，如果业务能容忍锁丢失（如幂等操作），用单节点 Redis + 看门狗足够；如果需要强一致锁，建议用 etcd。</p>
   </div></div></div>
 </div>
 
@@ -34,20 +36,36 @@ end</code></pre>
       <li>重复提交：Redis SET NX EX 分布式锁</li>
       <li>并发扣减：MySQL 悲观锁 SELECT FOR UPDATE</li>
     </ul>
-  </div><div class="case-card rounded-lg p-3 mt-3"><p class="text-xs font-semibold text-emerald-700 dark:text-emerald-400 mb-1">💼 实际案例</p><p class="text-sm text-emerald-800 dark:text-emerald-300">商品缓存采用 Cache Aside Pattern，更新商品信息时先更新DB再删除缓存。</p></div></div></div>
+  </div><div class="case-card rounded-lg p-3 mt-3"><p class="text-xs font-semibold text-emerald-700 dark:text-emerald-400 mb-1">💼 实际案例</p><p class="text-sm text-emerald-800 dark:text-emerald-300">商品缓存采用 Cache Aside Pattern，更新商品信息时先更新DB再删除缓存。</p>
+        <p class="mt-2"><strong>补充：Canal 监听 binlog 方案</strong>：通过 Canal 监听 MySQL binlog，数据变更时自动删除/更新 Redis 缓存，实现全自动异步同步，对业务代码零侵入。适用于对一致性要求高且不想侵入业务的场景。</p></div></div></div>
 </div>
 
 <div class="q-card bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 fade-in" id="q24" data-cat="redis" data-num="Q24" data-title="Redis有哪些数据结构？" data-ans="String Hash List Set ZSet 缓存 计数器 排行榜 消息队列">
   <button class="w-full text-left px-5 py-4 flex items-start gap-3" onclick="toggleA('q24')"><span class="shrink-0 mt-0.5 px-2 py-0.5 rounded text-xs font-bold bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300">Q24</span><span class="flex-1 font-medium text-sm sm:text-base leading-relaxed">Redis有哪些数据结构？</span><svg class="chevron w-5 h-5 shrink-0 mt-0.5 text-gray-400" id="ch-q24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button>
   <div class="answer-content" id="ans-q24"><div class="px-5 pb-5 space-y-3"><div class="text-sm leading-relaxed prose dark:prose-invert max-w-none">
     <table class="w-full text-sm border-collapse border border-gray-300 dark:border-gray-600 mt-2"><tr class="bg-gray-100 dark:bg-gray-700"><th class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">数据结构</th><th class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">使用场景</th></tr><tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5"><strong>String</strong></td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">缓存、计数器、分布式锁</td></tr><tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5"><strong>Hash</strong></td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">存储对象（用户信息、商品信息）</td></tr><tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5"><strong>List</strong></td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">消息队列、时间线</td></tr><tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5"><strong>Set</strong></td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">去重、交并集运算</td></tr><tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5"><strong>ZSet</strong></td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">排行榜、延迟队列</td></tr></table>
-  </div><div class="case-card rounded-lg p-3 mt-3"><p class="text-xs font-semibold text-emerald-700 dark:text-emerald-400 mb-1">💼 实际案例</p><p class="text-sm text-emerald-800 dark:text-emerald-300">商品列表缓存用 String，SSE 早期集群方案用 Hash 管理连接，用户 Session 用 String。</p></div></div></div>
+  </div><div class="case-card rounded-lg p-3 mt-3"><p class="text-xs font-semibold text-emerald-700 dark:text-emerald-400 mb-1">💼 实际案例</p><p class="text-sm text-emerald-800 dark:text-emerald-300">商品列表缓存用 String，SSE 早期集群方案用 Hash 管理连接，用户 Session 用 String。</p>
+        <p class="mt-2"><strong>补充：高级数据结构</strong>：</p>
+        <table class="w-full text-sm border-collapse border border-gray-300 dark:border-gray-600 mt-1">
+          <tr class="bg-gray-100 dark:bg-gray-700"><th class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">结构</th><th class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">场景</th></tr>
+          <tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5"><strong>Bitmap</strong></td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">签到统计、用户在线状态、布隆过滤器</td></tr>
+          <tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5"><strong>HyperLogLog</strong></td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">基数统计（UV 统计），误差 0.81%，内存仅 12KB</td></tr>
+          <tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5"><strong>Stream</strong></td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">消息队列（消费者组、消息确认、回溯）</td></tr>
+          <tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5"><strong>GeoSpatial</strong></td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">附近的人、地理位置计算</td></tr>
+        </table></div></div></div>
 </div>
 
 <div class="q-card bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 fade-in" id="q25" data-cat="redis" data-num="Q25" data-title="Redis持久化机制？" data-ans="RDB AOF 快照 追加日志 混合持久化">
   <button class="w-full text-left px-5 py-4 flex items-start gap-3" onclick="toggleA('q25')"><span class="shrink-0 mt-0.5 px-2 py-0.5 rounded text-xs font-bold bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300">Q25</span><span class="flex-1 font-medium text-sm sm:text-base leading-relaxed">Redis持久化机制？</span><svg class="chevron w-5 h-5 shrink-0 mt-0.5 text-gray-400" id="ch-q25" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button>
   <div class="answer-content" id="ans-q25"><div class="px-5 pb-5 space-y-3"><div class="text-sm leading-relaxed prose dark:prose-invert max-w-none">
     <table class="w-full text-sm border-collapse border border-gray-300 dark:border-gray-600 mt-2"><tr class="bg-gray-100 dark:bg-gray-700"><th class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">方式</th><th class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">原理</th><th class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">特点</th></tr><tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5"><strong>RDB（快照）</strong></td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">某个时间点的全量快照</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">恢复快，可能丢数据</td></tr><tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5"><strong>AOF（追加日志）</strong></td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">记录每个写命令</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">数据安全，文件大恢复慢</td></tr><tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5"><strong>混合持久化</strong></td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">AOF重写时先写RDB格式再追加AOF</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">兼顾两者优点</td></tr></table>
+    <p class="mt-2"><strong>RDB fork 与 COW</strong>：</p>
+    <ul class="list-disc pl-5 space-y-1">
+      <li>RDB 通过 <code>fork()</code> 创建子进程，父子进程共享内存页（Copy-On-Write）</li>
+      <li>只有被修改的内存页才会复制，大幅减少内存使用</li>
+      <li>但如果 fork 时数据量大且写入频繁，COW 可能导致内存翻倍，甚至触发 OOM</li>
+    </ul>
+    <p class="mt-2"><strong>AOF rewrite 过程</strong>：fork 子进程，将当前内存数据写为新 AOF 文件，同时父进程继续处理请求并追加到新 AOF 缓冲区，完成后替换旧文件。</p>
   </div></div></div>
 </div>
 
@@ -55,5 +73,5 @@ end</code></pre>
   <button class="w-full text-left px-5 py-4 flex items-start gap-3" onclick="toggleA('q26')"><span class="shrink-0 mt-0.5 px-2 py-0.5 rounded text-xs font-bold bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300">Q26</span><span class="flex-1 font-medium text-sm sm:text-base leading-relaxed">Redis集群方案有哪些？</span><svg class="chevron w-5 h-5 shrink-0 mt-0.5 text-gray-400" id="ch-q26" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button>
   <div class="answer-content" id="ans-q26"><div class="px-5 pb-5 space-y-3"><div class="text-sm leading-relaxed prose dark:prose-invert max-w-none">
     <table class="w-full text-sm border-collapse border border-gray-300 dark:border-gray-600 mt-2"><tr class="bg-gray-100 dark:bg-gray-700"><th class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">方案</th><th class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">特点</th></tr><tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5"><strong>主从复制</strong></td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">主写从读，异步复制，主宕机可能丢数据</td></tr><tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5"><strong>哨兵（Sentinel）</strong></td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">自动故障转移，无法水平扩展</td></tr><tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5"><strong>Cluster</strong></td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">16384哈希槽分片，支持水平扩展，多键用hashtag</td></tr></table>
-  </div></div></div>
-</div>
+    <p class="mt-2"><strong>Gossip 协议</strong>：Cluster 节点间通过 Gossip 协议传播状态信息（PING/PONG），包括节点上下线、槽位变更等。最终一致性，传播延迟与节点数相关。</p>
+    <p class="mt-2"><strong>扩缩容/resharding</strong>：通过 <code>redis-cli --cluster reshard</code> 迁移哈希槽到新节点，迁移过程中集群正常服务，支持在线扩缩容。</p>

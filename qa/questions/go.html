@@ -29,7 +29,23 @@
           <tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">channel/Mutex</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">M+G 一起阻塞</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">P 解绑，找新 M 继续执行</td></tr>
         </table>
       </div>
-      <div class="case-card rounded-lg p-3 mt-3"><p class="text-xs font-semibold text-emerald-700 dark:text-emerald-400 mb-1">💼 实际案例</p><p class="text-sm text-emerald-800 dark:text-emerald-300">SSE 服务 8 万并发连接，每个连接一个 goroutine，GMP 自动管理调度，8核CPU占用仅20%。</p></div>
+      <div class="case-card rounded-lg p-3 mt-3"><p class="text-xs font-semibold text-emerald-700 dark:text-emerald-400 mb-1">💼 实际案例</p><p class="text-sm text-emerald-800 dark:text-emerald-300">SSE 服务 8 万并发连接，每个连接一个 goroutine，GMP 自动管理调度，8核CPU占用仅20%。</p>
+        <p class="mt-2"><strong>补充：sysmon 监控线程</strong>：Go runtime 有一个特殊的 sysmon 线程，不参与调度，以 10μs~500μs 的频率循环执行，职责包括：</p>
+        <ul class="list-disc pl-5 space-y-1">
+          <li>检测网络 IO 就绪（配合 netpoller）</li>
+          <li>抢占长时间运行的 G（防止饿死）</li>
+          <li>释放 M 持有的 P（M 阻塞超 10ms 时）</li>
+          <li>触发 GC（每 2ms 检查一次是否需要 GC）</li>
+        </ul>
+        <p class="mt-2"><strong>Goroutine 状态转换</strong>：</p>
+        <ul class="list-disc pl-5 space-y-1">
+          <li><strong>Gidle</strong> → <strong>Grunnable</strong>：新建 G 放入运行队列</li>
+          <li><strong>Grunnable</strong> → <strong>Grunning</strong>：M 绑定 P 取出 G 执行</li>
+          <li><strong>Grunning</strong> → <strong>Gsyscall</strong>：G 发起系统调用，P 解绑</li>
+          <li><strong>Grunning</strong> → <strong>Gwaiting</strong>：G 阻塞在 channel/锁上</li>
+          <li><strong>Grunning</strong> → <strong>Grunnable</strong>：G 执行完毕或主动让出（yield）</li>
+        </ul>
+        <p class="mt-2"><strong>GOMAXPROCS</strong> 默认为 CPU 核心数，可通过环境变量或 <code>runtime.GOMAXPROCS(n)</code> 调整。它决定了同时能执行的用户级线程数。</p></div>
     </div>
   </div>
 </div>
@@ -52,7 +68,10 @@
         </table>
         <p class="mt-2"><strong>sync.Map vs Mutex+Map：</strong>sync.Map 适合读多写少；Mutex+Map 通用场景性能更好。</p>
       </div>
-      <div class="case-card rounded-lg p-3 mt-3"><p class="text-xs font-semibold text-emerald-700 dark:text-emerald-400 mb-1">💼 实际案例</p><p class="text-sm text-emerald-800 dark:text-emerald-300">SSE 服务用 sync.Mutex + Map 管理连接池。早期用 sync.Map（集群方案），后换成 Mutex+Map（单机方案），性能更好。</p></div>
+      <div class="case-card rounded-lg p-3 mt-3"><p class="text-xs font-semibold text-emerald-700 dark:text-emerald-400 mb-1">💼 实际案例</p><p class="text-sm text-emerald-800 dark:text-emerald-300">SSE 服务用 sync.Mutex + Map 管理连接池。早期用 sync.Map（集群方案），后换成 Mutex+Map（单机方案），性能更好。</p>
+        <p class="mt-2"><strong>补充：RWMutex 读写锁</strong>：读多写少场景下，sync.RWMutex 比 Mutex 性能更好，允许多个读锁并发持有，但写锁独占。使用 <code>RLock()</code>/<code>RUnlock()</code> 管理读锁。</p>
+        <p class="mt-2"><strong>竞态检测</strong>：Go 内置 race detector，测试时加 <code>-race</code> 标志（<code>go test -race</code>），可自动发现数据竞争问题，是 CI 最佳实践。</p>
+        <p class="mt-2"><strong>死锁检测</strong>：Go runtime 能检测部分死锁（所有 goroutine 都在等待时 panic）。复杂场景可用 pprof 查看 goroutine 阻塞堆栈定位问题。</p></div>
     </div>
   </div>
 </div>
@@ -83,7 +102,20 @@ case &lt;-time.After(3 * time.Second):
 }</code></pre>
         <p class="mt-2">context 可沿调用链传递，子 goroutine 也能感知超时；time.After 简单但无法传递上下文。</p>
       </div>
-      <div class="case-card rounded-lg p-3 mt-3"><p class="text-xs font-semibold text-emerald-700 dark:text-emerald-400 mb-1">💼 实际案例</p><p class="text-sm text-emerald-800 dark:text-emerald-300">SSE 服务用 context 控制连接生命周期，客户端断开后 context 取消通知 goroutine 退出。同时设置心跳超时。</p></div>
+      <div class="case-card rounded-lg p-3 mt-3"><p class="text-xs font-semibold text-emerald-700 dark:text-emerald-400 mb-1">💼 实际案例</p><p class="text-sm text-emerald-800 dark:text-emerald-300">SSE 服务用 context 控制连接生命周期，客户端断开后 context 取消通知 goroutine 退出。同时设置心跳超时。</p>
+        <p class="mt-2"><strong>补充：context 变体</strong>：</p>
+        <ul class="list-disc pl-5 space-y-1">
+          <li><code>context.WithCancel</code>：手动取消</li>
+          <li><code>context.WithDeadline</code>：设置绝对时间点截止</li>
+          <li><code>context.WithTimeout</code>：设置相对超时（内部调用 WithDeadline）</li>
+          <li><code>context.WithValue</code>：传递请求级别数据（如 traceID、userID）</li>
+        </ul>
+        <p class="mt-2"><strong>使用规范</strong>：</p>
+        <ul class="list-disc pl-5 space-y-1">
+          <li>context 作为函数第一个参数传递，不要存到结构体中</li>
+          <li>cancel 函数必须调用（通常 defer），否则会造成 context 泄漏</li>
+          <li>子 context 会继承父 context 的超时，父取消时所有子都收到通知</li>
+        </ul></div>
     </div>
   </div>
 </div>
@@ -105,7 +137,14 @@ case &lt;-time.After(3 * time.Second):
         <p class="mt-2"><strong>经典场景：</strong>生产者-消费者、信号传递（chan struct{}）、数据流水线、限流控制</p>
         <p class="mt-2"><strong>注意：</strong>只有发送方可关闭；不能关闭已关闭的 channel；关闭后仍可读取剩余数据。</p>
       </div>
-      <div class="case-card rounded-lg p-3 mt-3"><p class="text-xs font-semibold text-emerald-700 dark:text-emerald-400 mb-1">💼 实际案例</p><p class="text-sm text-emerald-800 dark:text-emerald-300">SSE 服务每个连接对应一个 channel 接收消息推送，典型生产者-消费者模型。</p></div>
+      <div class="case-card rounded-lg p-3 mt-3"><p class="text-xs font-semibold text-emerald-700 dark:text-emerald-400 mb-1">💼 实际案例</p><p class="text-sm text-emerald-800 dark:text-emerald-300">SSE 服务每个连接对应一个 channel 接收消息推送，典型生产者-消费者模型。</p>
+        <p class="mt-2"><strong>补充：channel 关闭后行为</strong>：</p>
+        <ul class="list-disc pl-5 space-y-1">
+          <li>向已关闭的 channel 发送数据 → <strong>panic</strong></li>
+          <li>从已关闭的 channel 接收 → 返回零值（非阻塞）</li>
+          <li><code>v, ok := &lt;-ch</code>：ok 为 false 表示 channel 已关闭且无数据</li>
+        </ul>
+        <p class="mt-2"><strong>select 与 default</strong>：select 中加 default 分支可实现非阻塞操作，常用于尝试发送但不阻塞的场景。</p></div>
     </div>
   </div>
 </div>
@@ -129,6 +168,17 @@ case &lt;-time.After(3 * time.Second):
           <li>append 时 cap 不够会分配新数组，原 slice 不变</li>
           <li>扩容规则：cap&lt;256 → 2倍；cap>=256 → 1.25倍+192</li>
         </ul>
+        <p class="mt-2"><strong>nil slice vs empty slice</strong>：</p>
+        <ul class="list-disc pl-5 space-y-1">
+          <li><code>var s []int</code>（nil slice）：Data 为 nil，len=0，cap=0</li>
+          <li><code>make([]int, 0)</code>（empty slice）：Data 指向 zerobase，len=0，cap=0</li>
+          <li>JSON 序列化差异：nil slice → <code>null</code>，empty slice → <code>[]</code></li>
+        </ul>
+        <p class="mt-2"><strong>子切片内存泄漏</strong>：从大 slice 中取子切片（<code>s[1000:1001]</code>），子切片仍引用整个底层数组，导致大数组无法被 GC 回收。解决：用 <code>copy</code> 创建独立副本。</p>
+        <pre><code class="language-go">// 避免内存泄漏的写法
+sub := make([]byte, 1)
+copy(sub, big[1000:1001])
+// 此时 big 可被 GC 回收</code></pre>
       </div>
     </div>
   </div>
@@ -152,7 +202,9 @@ case &lt;-time.After(3 * time.Second):
         </ul>
         <p class="mt-2"><strong>并发安全方案：</strong>sync.Mutex+map（通用）、sync.Map（读多写少）、sync.RWMutex+map（读写分离）</p>
       </div>
-      <div class="case-card rounded-lg p-3 mt-3"><p class="text-xs font-semibold text-emerald-700 dark:text-emerald-400 mb-1">💼 实际案例</p><p class="text-sm text-emerald-800 dark:text-emerald-300">SSE 连接管理用 map，key 是连接 ID，用 sync.Mutex 保证并发安全。</p></div>
+      <div class="case-card rounded-lg p-3 mt-3"><p class="text-xs font-semibold text-emerald-700 dark:text-emerald-400 mb-1">💼 实际案例</p><p class="text-sm text-emerald-800 dark:text-emerald-300">SSE 连接管理用 map，key 是连接 ID，用 sync.Mutex 保证并发安全。</p>
+        <p class="mt-2"><strong>补充：渐进式扩容</strong>：map 扩容不是一次性迁移所有数据，而是每次插入时逐步迁移旧 bucket 的内容，避免单次扩容造成性能抖动。</p>
+        <p class="mt-2"><strong>迭代顺序随机化</strong>：Go 的 map 迭代顺序是随机的（从 1.0 开始），即使同一个 map 两次遍历，元素顺序也不同。这是为了防止代码依赖特定迭代顺序。</p></div>
     </div>
   </div>
 </div>
@@ -173,6 +225,15 @@ case &lt;-time.After(3 * time.Second):
         </table>
         <pre><code class="language-go">v, ok := i.(Type)       // 类型断言
 switch v := i.(type) {} // 类型 switch</code></pre>
+        <p class="mt-2"><strong>nil interface 陷阱</strong>：一个常见 bug：</p>
+        <pre><code class="language-go">func do() error {
+    var p *MyError = nil
+    return p // 返回非 nil 的 error！
+}
+err := do()
+fmt.Println(err != nil) // true！因为 type 不为 nil</code></pre>
+        <p>interface 内部存储了类型信息，即使 value 为 nil，interface 本身也不等于 nil。这会导致 <code>if err != nil</code> 判断出现意外结果。</p>
+        <p class="mt-2"><strong>动态派发开销</strong>：interface 方法调用需要动态派发（查 itable），比直接调用多一层间接寻址。性能敏感场景应使用具体类型。</p>
       </div>
     </div>
   </div>
@@ -196,7 +257,23 @@ switch v := i.(type) {} // 类型 switch</code></pre>
         </ol>
         <p class="mt-2">写屏障保证标记过程中引用变化不会导致误回收。Go 1.8+ 混合写屏障减少 STW。</p>
       </div>
-      <div class="case-card rounded-lg p-3 mt-3"><p class="text-xs font-semibold text-emerald-700 dark:text-emerald-400 mb-1">💼 实际案例</p><p class="text-sm text-emerald-800 dark:text-emerald-300">8 万连接对象对 GC 有影响。优化：减少临时对象分配、使用 sync.Pool 复用。</p></div>
+      <div class="case-card rounded-lg p-3 mt-3"><p class="text-xs font-semibold text-emerald-700 dark:text-emerald-400 mb-1">💼 实际案例</p><p class="text-sm text-emerald-800 dark:text-emerald-300">8 万连接对象对 GC 有影响。优化：减少临时对象分配、使用 sync.Pool 复用。</p>
+        <p class="mt-2"><strong>补充：GOGC 调优</strong>：</p>
+        <ul class="list-disc pl-5 space-y-1">
+          <li>GOGC 控制 GC 触发频率，默认 100（堆增长到 2 倍时触发 GC）</li>
+          <li>可通过 <code>GOGC=50</code> 环境变量调整，降低值更频繁回收但增加 CPU 开销</li>
+          <li>Go 1.19+ 引入 <code>GOMEMLIMIT</code>，设置软性内存上限，超过时 GC 更积极运行</li>
+          <li>容器环境中 GOMEMLIMIT 特别有用，避免 OOM 被 kill</li>
+        </ul>
+        <p class="mt-2"><strong>GC Pacer</strong>：GC 开始时启动 Pacer，控制标记节奏，确保在堆分配完之前完成标记，同时最小化 STW。</p>
+        <p class="mt-2"><strong>内存分配器</strong>：Go 采用线程缓存分配器（TCMalloc 思想）：</p>
+        <table class="w-full text-sm border-collapse border border-gray-300 dark:border-gray-600 mt-1">
+          <tr class="bg-gray-100 dark:bg-gray-700"><th class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">组件</th><th class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">作用</th></tr>
+          <tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5"><strong>mspan</strong></td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">连续内存页，按大小分类</td></tr>
+          <tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5"><strong>mcentral</strong></td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">所有 P 共享，缓存 mspan</td></tr>
+          <tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5"><strong>mheap</strong></td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">管理所有堆内存，向 OS 申请</td></tr>
+          <tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5"><strong>mcach</strong></td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">每个 P 本地缓存，无锁分配</td></tr>
+        </table></div>
     </div>
   </div>
 </div>
@@ -219,6 +296,17 @@ switch v := i.(type) {} // 类型 switch</code></pre>
     defer func() { result = 10 }()
     return 1 // 最终返回 10
 }</code></pre>
+        <p class="mt-2"><strong>panic recover</strong>：defer + recover 是 Go 处理 panic 的唯一方式：</p>
+        <pre><code class="language-go">func safe() {
+    defer func() {
+        if r := recover(); r != nil {
+            log.Printf("recovered: %v", r)
+        }
+    }()
+    panic("something wrong")
+}</code></pre>
+        <p>注意：recover 只在 defer 函数内调用才有效。defer 的 LIFO 特性确保资源按正确顺序释放。</p>
+        <p class="mt-2"><strong>性能影响</strong>：Go 1.14 后 defer 性能大幅优化（延迟插入），开销约 25ns，不必过度担心。但在极高频循环中仍需注意。</p>
       </div>
     </div>
   </div>
@@ -246,7 +334,15 @@ buf := pool.Get().(*bytes.Buffer)
 buf.Reset()
 defer pool.Put(buf)</code></pre>
       </div>
-      <div class="case-card rounded-lg p-3 mt-3"><p class="text-xs font-semibold text-emerald-700 dark:text-emerald-400 mb-1">💼 实际案例</p><p class="text-sm text-emerald-800 dark:text-emerald-300">可用于 SSE 消息对象复用，减少 GC 压力。</p></div>
+      <div class="case-card rounded-lg p-3 mt-3"><p class="text-xs font-semibold text-emerald-700 dark:text-emerald-400 mb-1">💼 实际案例</p><p class="text-sm text-emerald-800 dark:text-emerald-300">可用于 SSE 消息对象复用，减少 GC 压力。</p>
+        <p class="mt-2"><strong>补充：内部实现</strong>：</p>
+        <ul class="list-disc pl-5 space-y-1">
+          <li>每个 P 维护本地 pool 缓存（<code>poolLocal</code>），Get 优先从本地取，最小化锁竞争</li>
+          <li>本地为空时从其他 P 偷取（work stealing 思想）或调用 New 函数创建</li>
+          <li>Put 时优先放回本地 pool，本地满则放入共享的 <code>poolShared</code></li>
+        </ul>
+        <p class="mt-2"><strong>注意</strong>：sync.Pool 中的对象可能在 GC 时被清空，所以 Get 后必须检查/重置状态（如 <code>buf.Reset()</code>）。</p>
+        <p class="mt-2"><strong>适用场景</strong>：大量短生命周期的临时对象复用，如 bytes.Buffer、encoding/json 编解码器等。</p></div>
     </div>
   </div>
 </div>

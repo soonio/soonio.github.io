@@ -17,6 +17,8 @@
   <div class="answer-content" id="ans-q28"><div class="px-5 pb-5 space-y-3"><div class="text-sm leading-relaxed prose dark:prose-invert max-w-none">
     <table class="w-full text-sm border-collapse border border-gray-300 dark:border-gray-600 mt-2"><tr class="bg-gray-100 dark:bg-gray-700"><th class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">算法</th><th class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">原理</th><th class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">特点</th></tr><tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5"><strong>令牌桶</strong></td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">固定速率放令牌，有令牌才能处理</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">允许突发流量</td></tr><tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5"><strong>漏桶</strong></td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">固定速率流出</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">平滑流量，不允许突发</td></tr></table>
     <p class="mt-2">go-zero 内置限流基于令牌桶。</p>
+    <p class="mt-2"><strong>补充：滑动窗口限流</strong>：将时间窗口分为 N 个小格，每个格独立计数，比固定窗口更平滑，避免窗口边界的突发流量。</p>
+    <p class="mt-2"><strong>分布式限流</strong>：基于 Redis + Lua 实现，用 <code>INCR + EXPIRE</code> 或滑动窗口算法，多个服务实例共享限流状态。</p>
   </div><div class="case-card rounded-lg p-3 mt-3"><p class="text-xs font-semibold text-emerald-700 dark:text-emerald-400 mb-1">💼 实际案例</p><p class="text-sm text-emerald-800 dark:text-emerald-300">活动期间用 go-zero 内置限流保护核心接口。</p></div></div></div>
 </div>
 
@@ -32,6 +34,8 @@
       <li>Half-Open 状态尝试放一个请求</li>
       <li>不需要手动配置阈值，自适应调整</li>
     </ul>
+    <p class="mt-2"><strong>补充：自适应熔断原理</strong>：go-zero 的 breaker 基于滑动窗口统计请求的成功率和平均响应时间，当 <code>1.5×(请求数-成功数)/请求数 > 阈值</code> 时触发熔断。与 Hystrix 的固定阈值不同，go-zero 动态调整，无需手动配置。</p>
+    <p class="mt-2"><strong>对比</strong>：Hystrix（Java，已停维）基于线程池隔离；Sentinel（Java）功能丰富但重；go-zero breaker 轻量、零配置，适合 Go 微服务。</p>
   </div></div></div>
 </div>
 
@@ -40,5 +44,12 @@
   <div class="answer-content" id="ans-q30"><div class="px-5 pb-5 space-y-3"><div class="text-sm leading-relaxed prose dark:prose-invert max-w-none">
     <p><strong>结构</strong>：Header.Payload.Signature（三段式 Base64）</p>
     <table class="w-full text-sm border-collapse border border-gray-300 dark:border-gray-600 mt-2"><tr class="bg-gray-100 dark:bg-gray-700"><th class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">优点</th><th class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">缺点</th></tr><tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">无状态、可跨域、不需要存 Session</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">无法主动失效、Token 泄露风险</td></tr></table>
-  </div><div class="case-card rounded-lg p-3 mt-3"><p class="text-xs font-semibold text-emerald-700 dark:text-emerald-400 mb-1">💼 实际案例</p><p class="text-sm text-emerald-800 dark:text-emerald-300">用户中心基于 JWT 实现 Token 管理，支持多端登录、Token 刷新、黑名单机制。</p></div></div></div>
+  </div><div class="case-card rounded-lg p-3 mt-3"><p class="text-xs font-semibold text-emerald-700 dark:text-emerald-400 mb-1">💼 实际案例</p><p class="text-sm text-emerald-800 dark:text-emerald-300">用户中心基于 JWT 实现 Token 管理，支持多端登录、Token 刷新、黑名单机制。</p>
+        <p class="mt-2"><strong>补充：Access + Refresh 双 Token 方案</strong>：</p>
+        <ul class="list-disc pl-5 space-y-1">
+          <li>Access Token：短效（如 15 分钟），用于请求认证</li>
+          <li>Refresh Token：长效（如 7 天），用于刷新 Access Token，单独存储</li>
+          <li>Access Token 泄露风险小（有效期短），Refresh Token 可主动撤销</li>
+        </ul>
+        <p class="mt-2"><strong>安全存储</strong>：前端用 httpOnly cookie 存储 Token（防 XSS），后端用 Redis 黑名单机制支持主动注销。</p></div></div></div>
 </div>

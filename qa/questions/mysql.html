@@ -21,6 +21,12 @@
   <div class="answer-content" id="ans-q13"><div class="px-5 pb-5 space-y-3"><div class="text-sm leading-relaxed prose dark:prose-invert max-w-none">
     <ul class="list-disc pl-5 space-y-1"><li><strong>count(*)</strong>：优先扫描最小的二级索引，MySQL 特殊优化</li><li><strong>count(1)</strong>：等价于 count(*)</li><li><strong>count(id)</strong>：需读取 id 字段判断 NULL，较慢</li></ul>
     <p class="mt-1 text-sm text-gray-500">推荐用 <code>count(*)</code>。</p>
+    <p class="mt-2"><strong>InnoDB vs MyISAM 的 count</strong>：</p>
+    <ul class="list-disc pl-5 space-y-1">
+      <li>MyISAM 维护了一个元数据计数器，<code>count(*)</code> 直接返回，O(1) 复杂度</li>
+      <li>InnoDB 没有维护计数器（因为 MVCC 导致不同事务看到行数不同），必须全表扫描或扫描索引</li>
+      <li>InnoDB 用 <code>count(*)</code> 会优先选最小的二级索引扫描，比扫描聚簇索引快</li>
+    </ul>
   </div></div></div>
 </div>
 
@@ -35,6 +41,12 @@
   <button class="w-full text-left px-5 py-4 flex items-start gap-3" onclick="toggleA('q15')"><span class="shrink-0 mt-0.5 px-2 py-0.5 rounded text-xs font-bold bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300">Q15</span><span class="flex-1 font-medium text-sm sm:text-base leading-relaxed">MySQL的ACID特性？</span><svg class="chevron w-5 h-5 shrink-0 mt-0.5 text-gray-400" id="ch-q15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button>
   <div class="answer-content" id="ans-q15"><div class="px-5 pb-5 space-y-3"><div class="text-sm leading-relaxed prose dark:prose-invert max-w-none">
     <table class="w-full text-sm border-collapse border border-gray-300 dark:border-gray-600 mt-2"><tr class="bg-gray-100 dark:bg-gray-700"><th class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">特性</th><th class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">含义</th><th class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">实现</th></tr><tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5"><strong>A 原子性</strong></td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">全做或全不做</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">undo log</td></tr><tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5"><strong>C 一致性</strong></td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">一致状态转变</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">其他三者保证</td></tr><tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5"><strong>I 隔离性</strong></td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">并发事务互不干扰</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">MVCC + 锁</td></tr><tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5"><strong>D 持久性</strong></td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">提交后永久保存</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">redo log</td></tr></table>
+    <p class="mt-2"><strong>MVCC 实现原理</strong>：每行数据有隐藏列 <code>DB_TRX_ID</code>（最后修改事务ID）和 <code>DB_ROLL_PTR</code>（回滚指针，指向 undo log）。</p>
+    <ul class="list-disc pl-5 space-y-1">
+      <li><strong>ReadView</strong>：事务快照读时生成，包含当前活跃事务列表，用于判断版本可见性</li>
+      <li>RC 级别每次 SELECT 都生成新 ReadView；RR 级别只在第一次 SELECT 时生成，后续复用</li>
+      <li>通过 <code>DB_ROLL_PTR</code> 沿版本链回溯，找到第一个对当前 ReadView 可见的版本</li>
+    </ul>
   </div></div></div>
 </div>
 
@@ -45,6 +57,14 @@
     <div class="mermaid my-4">graph TD; A[幻读]-->B{读类型}; B-->|快照读|C["MVCC:复用ReadView"]; B-->|当前读|D[Next-Key Lock]; C-->C1[其他事务插入不可见]; D-->D1[Record+Gap Lock锁住范围]</div>
     <ul class="list-disc pl-5 mt-2 space-y-1"><li><strong>快照读</strong>：MVCC ReadView 复用，事务内只看开始时的快照</li><li><strong>当前读</strong>：Next-Key Lock（Record Lock + Gap Lock）锁住范围防止插入</li></ul>
     <p class="mt-1 text-sm text-gray-500">MVCC + Next-Key Lock 解决大部分幻读，但复杂当前读场景仍可能出现。</p>
+    <p class="mt-2"><strong>四种隔离级别对比</strong>：</p>
+    <table class="w-full text-sm border-collapse border border-gray-300 dark:border-gray-600 mt-1">
+      <tr class="bg-gray-100 dark:bg-gray-700"><th class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">级别</th><th class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">脏读</th><th class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">不可重复读</th><th class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">幻读</th></tr>
+      <tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">读未提交</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">❗</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">❗</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">❗</td></tr>
+      <tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">读已提交</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">✅</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">❗</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">❗</td></tr>
+      <tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5"><strong>可重复读（默认）</strong></td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">✅</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">✅</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">❗（大部分解决）</td></tr>
+      <tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">串行化</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">✅</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">✅</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">✅</td></tr>
+    </table>
   </div></div></div>
 </div>
 
@@ -52,7 +72,15 @@
   <button class="w-full text-left px-5 py-4 flex items-start gap-3" onclick="toggleA('q17')"><span class="shrink-0 mt-0.5 px-2 py-0.5 rounded text-xs font-bold bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300">Q17</span><span class="flex-1 font-medium text-sm sm:text-base leading-relaxed">慢SQL怎么优化？</span><svg class="chevron w-5 h-5 shrink-0 mt-0.5 text-gray-400" id="ch-q17" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button>
   <div class="answer-content" id="ans-q17"><div class="px-5 pb-5 space-y-3"><div class="text-sm leading-relaxed prose dark:prose-invert max-w-none">
     <ol class="list-decimal pl-5 space-y-1"><li><strong>定位</strong>：慢查询日志</li><li><strong>分析</strong>：EXPLAIN 执行计划</li><li><strong>索引</strong>：添加合适索引、避免失效</li><li><strong>SQL</strong>：避免 SELECT *、减少子查询</li><li><strong>架构</strong>：分表、缓存、读写分离</li></ol>
-  </div><div class="case-card rounded-lg p-3 mt-3"><p class="text-xs font-semibold text-emerald-700 dark:text-emerald-400 mb-1">💼 实际案例</p><p class="text-sm text-emerald-800 dark:text-emerald-300">商品表按 tenant_id+status 联合索引，订单表按 tenant_id+created_at 建索引。</p></div></div></div>
+  </div><div class="case-card rounded-lg p-3 mt-3"><p class="text-xs font-semibold text-emerald-700 dark:text-emerald-400 mb-1">💼 实际案例</p><p class="text-sm text-emerald-800 dark:text-emerald-300">商品表按 tenant_id+status 联合索引，订单表按 tenant_id+created_at 建索引。</p>
+    <p class="mt-2"><strong>补充：常见优化手段</strong>：</p>
+    <ul class="list-disc pl-5 space-y-1">
+      <li><strong>索引优化</strong>：添加合适索引、覆盖索引避免回表、联合索引遵循最左前缀</li>
+      <li><strong>SQL 改写</strong>：避免 SELECT *、用 EXISTS 替代 IN、用 UNION 替代 OR</li>
+      <li><strong>表结构</strong>：垂直拆分（大字段分离）、水平分表（数据量大时）</li>
+      <li><strong>架构层</strong>：读写分离、加缓存（Redis）、ES 全文检索</li>
+      <li><strong>锁等待</strong>：用 <code>SHOW PROCESSLIST</code> 查看锁等待，<code>information_schema</code> 查锁信息</li>
+    </ul></div></div></div>
 </div>
 
 <div class="q-card bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 fade-in" id="q18" data-cat="mysql" data-num="Q18" data-title="explain各字段含义？" data-ans="explain type key rows Extra Using index filesort temporary">
@@ -65,7 +93,11 @@
 <div class="q-card bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 fade-in" id="q19" data-cat="mysql" data-num="Q19" data-title="索引失效的场景有哪些？" data-ans="索引失效 左模糊 LIKE 函数 隐式类型转换 OR 最左前缀 运算">
   <button class="w-full text-left px-5 py-4 flex items-start gap-3" onclick="toggleA('q19')"><span class="shrink-0 mt-0.5 px-2 py-0.5 rounded text-xs font-bold bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300">Q19</span><span class="flex-1 font-medium text-sm sm:text-base leading-relaxed">索引失效的场景有哪些？</span><svg class="chevron w-5 h-5 shrink-0 mt-0.5 text-gray-400" id="ch-q19" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button>
   <div class="answer-content" id="ans-q19"><div class="px-5 pb-5 space-y-3"><div class="text-sm leading-relaxed prose dark:prose-invert max-w-none">
-    <ul class="list-disc pl-5 space-y-1"><li>左模糊：<code>LIKE '%keyword'</code></li><li>索引字段用函数：<code>WHERE YEAR(created_at)=2024</code></li><li>隐式类型转换：varchar 字段用数字查</li><li>OR 一侧无索引</li><li>联合索引未遵循最左前缀</li><li>索引列参与运算：<code>WHERE id+1=10</code></li></ul>
+    <ul class="list-disc pl-5 space-y-1"><li>左模糊：<code>LIKE '%keyword'</code></li><li>索引字段用函数：<code>WHERE YEAR(created_at)=2024</code></li><li>隐式类型转换：varchar 字段用数字查</li><li>OR 一侧无索引</li><li>联合索引未遵循最左前缀</li><li>索引列参与运算：<code>WHERE id+1=10</code></li>
+      <li>NOT IN / NOT EXISTS 在某些情况下无法使用索引</li>
+      <li>IS NULL / IS NOT NULL：取决于数据分布，优化器可能放弃索引</li>
+      <li>字符集不一致：关联表字符集/排序规则不同导致隐式转换</li>
+      <li>优化器判断全表扫描更快时（如数据量小、或查询结枅占全表大部分）</li></ul>
   </div></div></div>
 </div>
 
@@ -73,5 +105,11 @@
   <button class="w-full text-left px-5 py-4 flex items-start gap-3" onclick="toggleA('q20')"><span class="shrink-0 mt-0.5 px-2 py-0.5 rounded text-xs font-bold bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300">Q20</span><span class="flex-1 font-medium text-sm sm:text-base leading-relaxed">多租户场景下索引怎么设计？</span><svg class="chevron w-5 h-5 shrink-0 mt-0.5 text-gray-400" id="ch-q20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button>
   <div class="answer-content" id="ans-q20"><div class="px-5 pb-5 space-y-3"><div class="text-sm leading-relaxed prose dark:prose-invert max-w-none">
     <ul class="list-disc pl-5 space-y-1"><li>所有表有 <code>tenant_id</code> 字段</li><li>GORM 中间件自动注入 tenant_id</li><li>联合索引 tenant_id 放最左：<code>(tenant_id, status, created_at)</code></li></ul>
+    <p class="mt-2"><strong>补充：设计考量</strong>：</p>
+    <ul class="list-disc pl-5 space-y-1">
+      <li>索引数量权衡：每个额外索引增加写入开销和存储空间，一般不超过 5-6 个</li>
+      <li>数据量大时考虑分表：单表超 500 万行可考虑按 tenant_id 分表</li>
+      <li>定期分析索引使用情况：<code>SHOW INDEX</code> + 慢查询日志，删除无用索引</li>
+    </ul>
   </div></div></div>
 </div>
