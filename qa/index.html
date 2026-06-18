@@ -7,7 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="icon" href="../assert/logo.svg" type="image/svg+xml">
+  <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
@@ -19,9 +20,7 @@
     body{font-family:'Noto Sans SC','Inter',system-ui,sans-serif}
     .q-card{transition:all .3s ease}.q-card:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(0,0,0,.1)}
     .answer-content{max-height:0;overflow:hidden;transition:max-height .5s ease-out}.answer-content.open{max-height:10000px}
-    .chevron{transition:transform .3s ease}.chevron.rotated{transform:rotate(180deg)}
-    .sidebar-link{transition:all .2s ease;font-size:.8rem}.sidebar-link:hover,.sidebar-link.active{background:rgba(37,99,235,.1);color:#2563eb;border-left:3px solid #2563eb}
-    .dark .sidebar-link:hover,.dark .sidebar-link.active{background:rgba(96,165,250,.15);color:#60a5fa;border-left-color:#60a5fa}
+    .chevron{transition:opacity .2s ease}
     .case-card{border-left:4px solid #10b981;background:linear-gradient(135deg,#ecfdf5 0%,#f0fdf4 100%)}
     .dark .case-card{background:linear-gradient(135deg,#064e3b33 0%,#065f4633 100%);border-left-color:#34d399}
     pre code{border-radius:8px;font-size:.875rem}
@@ -31,9 +30,6 @@
     ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}
     .dark ::-webkit-scrollbar-thumb{background:#475569}
     .fade-in{animation:fadeIn .3s ease-in}@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-    #sidebar{transition:transform .3s ease}
-    #sidebar.open{transform:translateX(0)!important}
-    @media(min-width:1025px){#sidebar{transform:translateX(0)!important}}
     .cat-btn.active{background:#2563eb!important;color:#fff!important}
     .loading-spinner{display:flex;justify-content:center;padding:4rem}.loading-spinner::after{content:'';width:2rem;height:2rem;border:3px solid #e5e7eb;border-top-color:#2563eb;border-radius:50%;animation:spin .6s linear infinite}
     @keyframes spin{to{transform:rotate(360deg)}}
@@ -44,17 +40,15 @@
 <nav class="fixed top-0 left-0 right-0 z-50 bg-white/90 dark:bg-gray-800/90 backdrop-blur-md border-b border-gray-200 dark:border-gray-700">
   <div class="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between gap-3">
     <div class="flex items-center gap-3 shrink-0">
-      <button class="lg:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700" onclick="toggleSidebar()"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+      <a href="../index.html" class="shrink-0 text-sm text-gray-400 hover:text-blue-600 transition-colors" title="返回首页">🏠</a>
       <h1 class="text-lg font-bold bg-gradient-to-r from-blue-600 to-emerald-500 bg-clip-text text-transparent">📘 面试题库</h1>
       <span class="hidden sm:inline text-xs text-gray-400">56题 · 8大分类</span>
     </div>
-    <div class="flex items-center gap-2 flex-1 max-w-md">
-      <div class="relative flex-1 hidden sm:block"><input id="searchInput" type="text" placeholder="搜索题目..." class="w-full pl-9 pr-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"><svg class="absolute left-3 top-2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg></div>
+    <div class="flex items-center gap-2">
       <button onclick="toggleDark()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"><span class="dark:hidden">🌙</span><span class="hidden dark:inline">☀️</span></button>
-      <button onclick="toggleAll()" id="toggleAllBtn" class="inline-block px-3 py-1.5 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-100 whitespace-nowrap">全部展开</button>
     </div>
   </div>
-  <div class="max-w-7xl mx-auto px-4 pb-2 flex gap-2 overflow-x-auto text-xs" id="tagBar">
+  <div class="max-w-7xl mx-auto px-4 pb-2 flex justify-center gap-2 overflow-x-auto text-xs" id="tagBar">
     <button onclick="filterCat('all',this)" class="cat-btn active px-3 py-1 rounded-full whitespace-nowrap">全部</button>
     <button onclick="filterCat('go',this)" class="cat-btn px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-700 whitespace-nowrap">🔵 Go语言</button>
     <button onclick="filterCat('mysql',this)" class="cat-btn px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-700 whitespace-nowrap">🟢 MySQL</button>
@@ -66,13 +60,16 @@
     <button onclick="filterCat('perf',this)" class="cat-btn px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-700 whitespace-nowrap">⚡ 性能调优</button>
   </div>
 </nav>
-<div id="sidebarOverlay" class="fixed inset-0 bg-black/30 z-30 hidden lg:hidden" onclick="toggleSidebar()"></div>
-<aside id="sidebar" class="fixed top-24 left-0 bottom-0 w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-y-auto z-40 lg:block" style="transform:translateX(-100%)"><div class="p-3"><div id="tocList" class="space-y-0.5"></div></div></aside>
-<main class="lg:ml-64 pt-28 pb-20 px-4 max-w-4xl mx-auto">
+
+<main class="pt-28 pb-20 px-4 max-w-4xl mx-auto">
   <div id="questionList" class="space-y-4"><div class="loading-spinner"></div></div>
   <div id="noResult" class="hidden text-center py-20 text-gray-400"><p class="text-4xl mb-4">🔍</p><p>没有找到匹配的题目</p></div>
 </main>
-<button id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" class="fixed bottom-6 right-6 w-10 h-10 rounded-full bg-blue-600 text-white shadow-lg flex items-center justify-center opacity-0 pointer-events-none transition-all hover:bg-blue-700 z-50"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg></button>
+<!-- 右下角悬浮按钮组 -->
+<div class="fixed bottom-6 right-6 flex flex-col gap-3 z-50">
+  <button id="toggleAllBtn" onclick="toggleAll()" title="全部展开/折叠" class="w-11 h-11 rounded-full bg-emerald-500 text-white shadow-lg flex items-center justify-center hover:bg-emerald-600 transition-all"><img id="toggleAllIcon" src="asserts/expand.svg" alt="全部展开" class="w-5 h-5 invert"></button>
+  <button id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="回到顶部" class="w-11 h-11 rounded-full bg-blue-600 text-white shadow-lg flex items-center justify-center opacity-0 pointer-events-none transition-all hover:bg-blue-700"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg></button>
+</div>
 <script>
 mermaid.initialize({startOnLoad:false,theme:'default',securityLevel:'loose'});
 
@@ -90,7 +87,6 @@ const Q_FILES={
 
 let allOpen=false,curCat='all';
 const $list=document.getElementById('questionList');
-const $toc=document.getElementById('tocList');
 const $noR=document.getElementById('noResult');
 
 // ===== 加载所有题目文件 =====
@@ -99,7 +95,6 @@ async function loadQuestions(){
     const res=await Promise.all(Object.values(Q_FILES).map(f=>fetch(f).then(r=>{if(!r.ok)throw new Error(f);return r.text()})));
     $list.innerHTML=res.join('\n');
     initPlugins();
-    buildSidebar();
   }catch(e){console.error('加载题目失败:',e);$list.innerHTML='<p class="text-center text-red-500 py-10">加载失败，请刷新重试</p>'}
 }
 
@@ -110,30 +105,24 @@ function initPlugins(){
   if(mn.length)mermaid.run({nodes:mn}).catch(e=>console.warn('mermaid:',e));
 }
 
-function buildSidebar(){
-  let h='';
-  document.querySelectorAll('.q-card').forEach(el=>{
-    if(el.style.display==='none')return;
-    const id=el.id,num=el.dataset.num,title=el.dataset.title;
-    const t=title.length>22?title.slice(0,22)+'...':title;
-    h+=`<a href="#${id}" class="sidebar-link block px-3 py-1.5 rounded-r text-gray-600 dark:text-gray-400 truncate" onclick="navTo('${id}')"><span class="text-blue-500 mr-1">${num}</span>${t}</a>`;
-  });
-  $toc.innerHTML=h;
-}
-
 // ===== 交互 =====
 function toggleA(id){
   const el=document.getElementById('ans-'+id),ch=document.getElementById('ch-'+id);
-  el.classList.toggle('open');ch.classList.toggle('rotated');
+  el.classList.toggle('open');
+  const isOpen=el.classList.contains('open');
+  ch.src=isOpen?'asserts/shrink.svg':'asserts/expand.svg';
+  ch.alt=isOpen?'折叠':'展开';
 }
 
 function toggleAll(){
   allOpen=!allOpen;
-  document.getElementById('toggleAllBtn').textContent=allOpen?'全部折叠':'全部展开';
+  const icon=document.getElementById('toggleAllIcon');
+  icon.src=allOpen?'asserts/shrink.svg':'asserts/expand.svg';
+  icon.alt=allOpen?'全部折叠':'全部展开';
   document.querySelectorAll('.q-card').forEach(card=>{
     if(card.style.display==='none')return;
-    const ans=card.querySelector('.answer-content'),chev=card.querySelector('.chevron');
-    if(ans&&chev){ans.classList.toggle('open',allOpen);chev.classList.toggle('rotated',allOpen)}
+    const ans=card.querySelector('.answer-content'),ch=card.querySelector('.chevron');
+    if(ans&&ch){ans.classList.toggle('open',allOpen);ch.src=allOpen?'asserts/shrink.svg':'asserts/expand.svg';ch.alt=allOpen?'折叠':'展开'}
   });
 }
 
@@ -145,28 +134,14 @@ function filterCat(c,btn){
 }
 
 function applyFilters(){
-  const kw=document.getElementById('searchInput').value.toLowerCase();
   let vis=0;
   document.querySelectorAll('.q-card').forEach(card=>{
-    const cat=card.dataset.cat,title=card.dataset.title||'',ans=card.dataset.ans||'';
-    let show=true;
-    if(curCat!=='all'&&cat!==curCat)show=false;
-    if(kw&&!title.toLowerCase().includes(kw)&&!ans.toLowerCase().includes(kw))show=false;
+    const cat=card.dataset.cat;
+    let show=curCat==='all'||cat===curCat;
     card.style.display=show?'':'none';
     if(show)vis++;
   });
   $noR.classList.toggle('hidden',vis>0);
-  buildSidebar();
-}
-
-function navTo(id){
-  document.getElementById(id)?.scrollIntoView({behavior:'smooth',block:'start'});
-  if(window.innerWidth<1024)toggleSidebar();
-}
-
-function toggleSidebar(){
-  document.getElementById('sidebar').classList.toggle('open');
-  document.getElementById('sidebarOverlay').classList.toggle('hidden');
 }
 
 function toggleDark(){
@@ -175,7 +150,6 @@ function toggleDark(){
 }
 
 // ===== 事件 =====
-document.getElementById('searchInput').addEventListener('input',()=>applyFilters());
 window.addEventListener('scroll',()=>{
   const btn=document.getElementById('backTop');
   if(window.scrollY>300){btn.classList.remove('opacity-0','pointer-events-none');btn.classList.add('opacity-100')}

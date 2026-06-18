@@ -4,7 +4,7 @@
   <button class="w-full text-left px-5 py-4 flex items-start gap-3" onclick="toggleA('q1')">
     <span class="shrink-0 mt-0.5 px-2 py-0.5 rounded text-xs font-bold bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300">Q1</span>
     <span class="flex-1 font-medium text-sm sm:text-base leading-relaxed">解释一下Go的GMP调度模型，G阻塞时M和P分别会怎样？</span>
-    <svg class="chevron w-5 h-5 shrink-0 mt-0.5 text-gray-400" id="ch-q1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+    <img class="chevron w-5 h-5 shrink-0 mt-0.5" id="ch-q1" src="asserts/expand.svg" alt="展开">
   </button>
   <div class="answer-content" id="ans-q1">
     <div class="px-5 pb-5 space-y-3">
@@ -54,7 +54,7 @@
   <button class="w-full text-left px-5 py-4 flex items-start gap-3" onclick="toggleA('q2')">
     <span class="shrink-0 mt-0.5 px-2 py-0.5 rounded text-xs font-bold bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300">Q2</span>
     <span class="flex-1 font-medium text-sm sm:text-base leading-relaxed">Go协程安全问题怎么处理？</span>
-    <svg class="chevron w-5 h-5 shrink-0 mt-0.5 text-gray-400" id="ch-q2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+    <img class="chevron w-5 h-5 shrink-0 mt-0.5" id="ch-q2" src="asserts/expand.svg" alt="展开">
   </button>
   <div class="answer-content" id="ans-q2">
     <div class="px-5 pb-5 space-y-3">
@@ -80,7 +80,7 @@
   <button class="w-full text-left px-5 py-4 flex items-start gap-3" onclick="toggleA('q3')">
     <span class="shrink-0 mt-0.5 px-2 py-0.5 rounded text-xs font-bold bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300">Q3</span>
     <span class="flex-1 font-medium text-sm sm:text-base leading-relaxed">Go中怎么实现协程超时控制？</span>
-    <svg class="chevron w-5 h-5 shrink-0 mt-0.5 text-gray-400" id="ch-q3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+    <img class="chevron w-5 h-5 shrink-0 mt-0.5" id="ch-q3" src="asserts/expand.svg" alt="展开">
   </button>
   <div class="answer-content" id="ans-q3">
     <div class="px-5 pb-5 space-y-3">
@@ -124,7 +124,7 @@ case &lt;-time.After(3 * time.Second):
   <button class="w-full text-left px-5 py-4 flex items-start gap-3" onclick="toggleA('q4')">
     <span class="shrink-0 mt-0.5 px-2 py-0.5 rounded text-xs font-bold bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300">Q4</span>
     <span class="flex-1 font-medium text-sm sm:text-base leading-relaxed">channel有哪些使用场景？buffered和unbuffered有什么区别？</span>
-    <svg class="chevron w-5 h-5 shrink-0 mt-0.5 text-gray-400" id="ch-q4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+    <img class="chevron w-5 h-5 shrink-0 mt-0.5" id="ch-q4" src="asserts/expand.svg" alt="展开">
   </button>
   <div class="answer-content" id="ans-q4">
     <div class="px-5 pb-5 space-y-3">
@@ -153,7 +153,7 @@ case &lt;-time.After(3 * time.Second):
   <button class="w-full text-left px-5 py-4 flex items-start gap-3" onclick="toggleA('q5')">
     <span class="shrink-0 mt-0.5 px-2 py-0.5 rounded text-xs font-bold bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300">Q5</span>
     <span class="flex-1 font-medium text-sm sm:text-base leading-relaxed">slice的底层原理是什么？</span>
-    <svg class="chevron w-5 h-5 shrink-0 mt-0.5 text-gray-400" id="ch-q5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+    <img class="chevron w-5 h-5 shrink-0 mt-0.5" id="ch-q5" src="asserts/expand.svg" alt="展开">
   </button>
   <div class="answer-content" id="ans-q5">
     <div class="px-5 pb-5 space-y-3">
@@ -188,7 +188,7 @@ copy(sub, big[1000:1001])
   <button class="w-full text-left px-5 py-4 flex items-start gap-3" onclick="toggleA('q6')">
     <span class="shrink-0 mt-0.5 px-2 py-0.5 rounded text-xs font-bold bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300">Q6</span>
     <span class="flex-1 font-medium text-sm sm:text-base leading-relaxed">map的底层实现原理？</span>
-    <svg class="chevron w-5 h-5 shrink-0 mt-0.5 text-gray-400" id="ch-q6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+    <img class="chevron w-5 h-5 shrink-0 mt-0.5" id="ch-q6" src="asserts/expand.svg" alt="展开">
   </button>
   <div class="answer-content" id="ans-q6">
     <div class="px-5 pb-5 space-y-3">
@@ -213,7 +213,7 @@ copy(sub, big[1000:1001])
   <button class="w-full text-left px-5 py-4 flex items-start gap-3" onclick="toggleA('q7')">
     <span class="shrink-0 mt-0.5 px-2 py-0.5 rounded text-xs font-bold bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300">Q7</span>
     <span class="flex-1 font-medium text-sm sm:text-base leading-relaxed">interface的原理是什么？</span>
-    <svg class="chevron w-5 h-5 shrink-0 mt-0.5 text-gray-400" id="ch-q7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+    <img class="chevron w-5 h-5 shrink-0 mt-0.5" id="ch-q7" src="asserts/expand.svg" alt="展开">
   </button>
   <div class="answer-content" id="ans-q7">
     <div class="px-5 pb-5 space-y-3">
@@ -243,7 +243,7 @@ fmt.Println(err != nil) // true！因为 type 不为 nil</code></pre>
   <button class="w-full text-left px-5 py-4 flex items-start gap-3" onclick="toggleA('q8')">
     <span class="shrink-0 mt-0.5 px-2 py-0.5 rounded text-xs font-bold bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300">Q8</span>
     <span class="flex-1 font-medium text-sm sm:text-base leading-relaxed">Go的GC算法是什么？</span>
-    <svg class="chevron w-5 h-5 shrink-0 mt-0.5 text-gray-400" id="ch-q8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+    <img class="chevron w-5 h-5 shrink-0 mt-0.5" id="ch-q8" src="asserts/expand.svg" alt="展开">
   </button>
   <div class="answer-content" id="ans-q8">
     <div class="px-5 pb-5 space-y-3">
@@ -282,7 +282,7 @@ fmt.Println(err != nil) // true！因为 type 不为 nil</code></pre>
   <button class="w-full text-left px-5 py-4 flex items-start gap-3" onclick="toggleA('q9')">
     <span class="shrink-0 mt-0.5 px-2 py-0.5 rounded text-xs font-bold bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300">Q9</span>
     <span class="flex-1 font-medium text-sm sm:text-base leading-relaxed">defer的执行顺序？</span>
-    <svg class="chevron w-5 h-5 shrink-0 mt-0.5 text-gray-400" id="ch-q9" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+    <img class="chevron w-5 h-5 shrink-0 mt-0.5" id="ch-q9" src="asserts/expand.svg" alt="展开">
   </button>
   <div class="answer-content" id="ans-q9">
     <div class="px-5 pb-5 space-y-3">
@@ -316,7 +316,7 @@ fmt.Println(err != nil) // true！因为 type 不为 nil</code></pre>
   <button class="w-full text-left px-5 py-4 flex items-start gap-3" onclick="toggleA('q10')">
     <span class="shrink-0 mt-0.5 px-2 py-0.5 rounded text-xs font-bold bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300">Q10</span>
     <span class="flex-1 font-medium text-sm sm:text-base leading-relaxed">sync.Pool的原理和使用场景？</span>
-    <svg class="chevron w-5 h-5 shrink-0 mt-0.5 text-gray-400" id="ch-q10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+    <img class="chevron w-5 h-5 shrink-0 mt-0.5" id="ch-q10" src="asserts/expand.svg" alt="展开">
   </button>
   <div class="answer-content" id="ans-q10">
     <div class="px-5 pb-5 space-y-3">

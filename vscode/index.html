@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Visual Studio Code</title>
+    <link rel="icon" href="../assert/logo.svg" type="image/svg+xml">
     <style>
         html,
         body {
@@ -65,12 +66,12 @@
 </head>
 
 <body>
-    <canvas id="canvas" width="3508" height="2479"> </canvas>
-    <img id="home" class="btn" title="HOME"
+    <canvas id="canvas" width="3508" height="2479" role="img" aria-label="VSCode 快捷键速查表"> </canvas>
+    <img id="home" class="btn" title="HOME" alt="返回首页"
         src="./home.svg" />
-    <img id="download" class="btn" title="下载"
+    <img id="download" class="btn" title="下载" alt="下载快捷键表"
         src="./download.svg" />
-    <img id="github" class="btn" title="github"
+    <img id="github" class="btn" title="github" alt="GitHub 仓库"
         src="./github.svg" />
     <script>
         const a4 = 3508 / 2479
@@ -144,7 +145,7 @@
         }
 
         fetch(`keyshort.json`, { method: 'GET', headers: { 'Accept': 'application/json' } })
-            .then(response => response.json())
+            .then(response => { if (!response.ok) throw new Error('Failed to load'); return response.json(); })
             .then(response => {
                 const group = [
                     {
@@ -170,6 +171,13 @@
 
 
             })
+            .catch(err => {
+                console.error('加载快捷键数据失败:', err);
+                const msg = document.createElement('p');
+                msg.style.cssText = 'text-align:center;padding:2rem;color:red;font-size:1.2rem;';
+                msg.textContent = '加载快捷键数据失败，请刷新重试';
+                document.body.prepend(msg);
+            })
 
         document.getElementById('download').addEventListener('click', () => {
             const link = document.createElement('a');
@@ -180,7 +188,7 @@
             document.body.removeChild(link);
         })
         document.getElementById('github').addEventListener('click', () => window.open('https://github.com/soonio/vscode-shortcut', '_blank'))
-        document.getElementById('home').addEventListener('click', () => window.open('https://iosoon.cn', '_self'))
+        document.getElementById('home').addEventListener('click', () => window.open('../index.html', '_self'))
     </script>
 </body>
 

@@ -1,7 +1,7 @@
 <!-- Q34-Q40 项目相关 -->
 
 <div class="q-card bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 fade-in" id="q34" data-cat="project" data-num="Q34" data-title="为什么选SSE而不是WebSocket？" data-ans="SSE WebSocket 单向推送 重连 HTTP 轻量">
-  <button class="w-full text-left px-5 py-4 flex items-start gap-3" onclick="toggleA('q34')"><span class="shrink-0 mt-0.5 px-2 py-0.5 rounded text-xs font-bold bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-300">Q34</span><span class="flex-1 font-medium text-sm sm:text-base leading-relaxed">为什么选SSE而不是WebSocket？</span><svg class="chevron w-5 h-5 shrink-0 mt-0.5 text-gray-400" id="ch-q34" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button>
+  <button class="w-full text-left px-5 py-4 flex items-start gap-3" onclick="toggleA('q34')"><span class="shrink-0 mt-0.5 px-2 py-0.5 rounded text-xs font-bold bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-300">Q34</span><span class="flex-1 font-medium text-sm sm:text-base leading-relaxed">为什么选SSE而不是WebSocket？</span><img class="chevron w-5 h-5 shrink-0 mt-0.5" id="ch-q34" src="asserts/expand.svg" alt="展开"></button>
   <div class="answer-content" id="ans-q34"><div class="px-5 pb-5 space-y-3"><div class="text-sm leading-relaxed prose dark:prose-invert max-w-none">
     <p>业务只需要<strong>服务端单向推送</strong>（消息通知、活动推送），SSE 更轻量，自带重连机制，基于 HTTP 协议更易部署。WebSocket 适合双向通信场景，我们不需要。</p>
     <p class="mt-2"><strong>补充：SSE 协议细节</strong>：</p>
@@ -15,7 +15,7 @@
 </div>
 
 <div class="q-card bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 fade-in" id="q35" data-cat="project" data-num="Q35" data-title="SSE的8万并发连接怎么管理的？" data-ans="goroutine sync.Mutex Map 心跳 context 8核 20% 3.5G">
-  <button class="w-full text-left px-5 py-4 flex items-start gap-3" onclick="toggleA('q35')"><span class="shrink-0 mt-0.5 px-2 py-0.5 rounded text-xs font-bold bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-300">Q35</span><span class="flex-1 font-medium text-sm sm:text-base leading-relaxed">SSE的8万并发连接怎么管理的？</span><svg class="chevron w-5 h-5 shrink-0 mt-0.5 text-gray-400" id="ch-q35" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button>
+  <button class="w-full text-left px-5 py-4 flex items-start gap-3" onclick="toggleA('q35')"><span class="shrink-0 mt-0.5 px-2 py-0.5 rounded text-xs font-bold bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-300">Q35</span><span class="flex-1 font-medium text-sm sm:text-base leading-relaxed">SSE的8万并发连接怎么管理的？</span><img class="chevron w-5 h-5 shrink-0 mt-0.5" id="ch-q35" src="asserts/expand.svg" alt="展开"></button>
   <div class="answer-content" id="ans-q35"><div class="px-5 pb-5 space-y-3"><div class="text-sm leading-relaxed prose dark:prose-invert max-w-none">
     <ul class="list-disc pl-5 space-y-1">
       <li>每个连接一个 goroutine，用 sync.Mutex + Map 管理连接</li>
@@ -34,7 +34,7 @@
 </div>
 
 <div class="q-card bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 fade-in" id="q36" data-cat="project" data-num="Q36" data-title="活动期间从2k突增到8w连接怎么处理的？" data-ans="连接数 maxclients tcp-keepalive Redis 弹性">
-  <button class="w-full text-left px-5 py-4 flex items-start gap-3" onclick="toggleA('q36')"><span class="shrink-0 mt-0.5 px-2 py-0.5 rounded text-xs font-bold bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-300">Q36</span><span class="flex-1 font-medium text-sm sm:text-base leading-relaxed">活动期间从2k突增到8w连接怎么处理的？</span><svg class="chevron w-5 h-5 shrink-0 mt-0.5 text-gray-400" id="ch-q36" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button>
+  <button class="w-full text-left px-5 py-4 flex items-start gap-3" onclick="toggleA('q36')"><span class="shrink-0 mt-0.5 px-2 py-0.5 rounded text-xs font-bold bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-300">Q36</span><span class="flex-1 font-medium text-sm sm:text-base leading-relaxed">活动期间从2k突增到8w连接怎么处理的？</span><img class="chevron w-5 h-5 shrink-0 mt-0.5" id="ch-q36" src="asserts/expand.svg" alt="展开"></button>
   <div class="answer-content" id="ans-q36"><div class="px-5 pb-5 space-y-3"><div class="text-sm leading-relaxed prose dark:prose-invert max-w-none">
     <ul class="list-disc pl-5 space-y-1">
       <li>不限制并发连接数</li>
@@ -45,7 +45,7 @@
 </div>
 
 <div class="q-card bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 fade-in" id="q37" data-cat="project" data-num="Q37" data-title="2万+QPS怎么扛住的？" data-ans="QPS 内存缓存 商品列表 商品详情 活动期间">
-  <button class="w-full text-left px-5 py-4 flex items-start gap-3" onclick="toggleA('q37')"><span class="shrink-0 mt-0.5 px-2 py-0.5 rounded text-xs font-bold bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-300">Q37</span><span class="flex-1 font-medium text-sm sm:text-base leading-relaxed">2万+QPS怎么扛住的？</span><svg class="chevron w-5 h-5 shrink-0 mt-0.5 text-gray-400" id="ch-q37" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button>
+  <button class="w-full text-left px-5 py-4 flex items-start gap-3" onclick="toggleA('q37')"><span class="shrink-0 mt-0.5 px-2 py-0.5 rounded text-xs font-bold bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-300">Q37</span><span class="flex-1 font-medium text-sm sm:text-base leading-relaxed">2万+QPS怎么扛住的？</span><img class="chevron w-5 h-5 shrink-0 mt-0.5" id="ch-q37" src="asserts/expand.svg" alt="展开"></button>
   <div class="answer-content" id="ans-q37"><div class="px-5 pb-5 space-y-3"><div class="text-sm leading-relaxed prose dark:prose-invert max-w-none">
     <ul class="list-disc pl-5 space-y-1">
       <li><strong>场景</strong>：活动期间，请求集中在商品列表、商品详情、预下单</li>
@@ -64,7 +64,7 @@
 </div>
 
 <div class="q-card bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 fade-in" id="q38" data-cat="project" data-num="Q38" data-title="多租户数据隔离怎么做的？" data-ans="多租户 tenant_id GORM 中间件 联合索引">
-  <button class="w-full text-left px-5 py-4 flex items-start gap-3" onclick="toggleA('q38')"><span class="shrink-0 mt-0.5 px-2 py-0.5 rounded text-xs font-bold bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-300">Q38</span><span class="flex-1 font-medium text-sm sm:text-base leading-relaxed">多租户数据隔离怎么做的？</span><svg class="chevron w-5 h-5 shrink-0 mt-0.5 text-gray-400" id="ch-q38" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button>
+  <button class="w-full text-left px-5 py-4 flex items-start gap-3" onclick="toggleA('q38')"><span class="shrink-0 mt-0.5 px-2 py-0.5 rounded text-xs font-bold bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-300">Q38</span><span class="flex-1 font-medium text-sm sm:text-base leading-relaxed">多租户数据隔离怎么做的？</span><img class="chevron w-5 h-5 shrink-0 mt-0.5" id="ch-q38" src="asserts/expand.svg" alt="展开"></button>
   <div class="answer-content" id="ans-q38"><div class="px-5 pb-5 space-y-3"><div class="text-sm leading-relaxed prose dark:prose-invert max-w-none">
     <ul class="list-disc pl-5 space-y-1">
       <li>共享数据库 + tenant_id 字段隔离</li>
@@ -83,7 +83,7 @@
 </div>
 
 <div class="q-card bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 fade-in" id="q39" data-cat="project" data-num="Q39" data-title="为什么用go-zero？" data-ans="go-zero 服务治理 限流熔断 服务发现 开箱即用">
-  <button class="w-full text-left px-5 py-4 flex items-start gap-3" onclick="toggleA('q39')"><span class="shrink-0 mt-0.5 px-2 py-0.5 rounded text-xs font-bold bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-300">Q39</span><span class="flex-1 font-medium text-sm sm:text-base leading-relaxed">为什么用go-zero？</span><svg class="chevron w-5 h-5 shrink-0 mt-0.5 text-gray-400" id="ch-q39" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button>
+  <button class="w-full text-left px-5 py-4 flex items-start gap-3" onclick="toggleA('q39')"><span class="shrink-0 mt-0.5 px-2 py-0.5 rounded text-xs font-bold bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-300">Q39</span><span class="flex-1 font-medium text-sm sm:text-base leading-relaxed">为什么用go-zero？</span><img class="chevron w-5 h-5 shrink-0 mt-0.5" id="ch-q39" src="asserts/expand.svg" alt="展开"></button>
   <div class="answer-content" id="ans-q39"><div class="px-5 pb-5 space-y-3"><div class="text-sm leading-relaxed prose dark:prose-invert max-w-none">
     <p>go-zero 内置服务治理、限流熔断、服务发现等能力，开箱即用。相比自己封装，开发效率高，社区活跃。</p>
     <p class="mt-2"><strong>补充：与 Kratos 对比</strong>：</p>
@@ -96,7 +96,7 @@
 </div>
 
 <div class="q-card bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 fade-in" id="q40" data-cat="project" data-num="Q40" data-title="为什么选K3S而不是K8S？" data-ans="K3S K8S 轻量 资源占用 小规模 运维成本">
-  <button class="w-full text-left px-5 py-4 flex items-start gap-3" onclick="toggleA('q40')"><span class="shrink-0 mt-0.5 px-2 py-0.5 rounded text-xs font-bold bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-300">Q40</span><span class="flex-1 font-medium text-sm sm:text-base leading-relaxed">为什么选K3S而不是K8S？</span><svg class="chevron w-5 h-5 shrink-0 mt-0.5 text-gray-400" id="ch-q40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button>
+  <button class="w-full text-left px-5 py-4 flex items-start gap-3" onclick="toggleA('q40')"><span class="shrink-0 mt-0.5 px-2 py-0.5 rounded text-xs font-bold bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-300">Q40</span><span class="flex-1 font-medium text-sm sm:text-base leading-relaxed">为什么选K3S而不是K8S？</span><img class="chevron w-5 h-5 shrink-0 mt-0.5" id="ch-q40" src="asserts/expand.svg" alt="展开"></button>
   <div class="answer-content" id="ans-q40"><div class="px-5 pb-5 space-y-3"><div class="text-sm leading-relaxed prose dark:prose-invert max-w-none">
     <p>K3S 更轻量，资源占用少，适合小规模部署。对于小布在家这种初创项目，K3S 足够满足需求，运维成本也更低。</p>
     <p class="mt-2"><strong>补充：K3S 与 K8S 具体差异</strong>：</p>

@@ -3,12 +3,14 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport"
-    content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <meta description="让清流与你分享更多技术" name="description" data-rh="true">
-  <meta content="让清流与你分享更多技术。" property="og:description" data-rh="true">
-  <link rel="icon" href="assert/logo.svg" type="image/x-icon" />
+  <meta name="description" content="让清流与你分享更多技术">
+  <meta property="og:title" content="一股清流">
+  <meta property="og:description" content="让清流与你分享更多技术。">
+  <meta property="og:image" content="assert/logo.svg">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="assert/logo.svg" type="image/svg+xml" />
   <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
   <link rel="apple-touch-icon" href="assert/apple-icon.png">
   <title>一股清流</title>
@@ -153,6 +155,7 @@
       <div class="top-right links">
         <a target="_blank" href="https://github.com/soonio">github</a>
         <a target="_blank" href="https://notebook.iosoon.cn">notebook</a>
+        <a href="./qa/">面试题库</a>
       </div>
 
       <div id="big-text" class="title"></div>
@@ -164,8 +167,10 @@
             src="assert/swagger.svg" alt="github"></a>
         <a class="github" target="_blank" href="https://monster.iosoon.cn/"><img width="21px" src="./assert/octopus.svg"
             alt="工具后台"></a>
-        <a class="github" target="_blank" href="https://www.iosoon.cn/vscode/"><img width="21px" src="./assert/vscode.svg"
+        <a class="github" href="./vscode/"><img width="21px" src="./assert/vscode.svg"
             alt="vscode-keyshorts"></a>
+        <a class="github" href="./qa/"><img width="21px" src="./assert/document.svg"
+            alt="面试题库"></a>
       </div>
     </div>
   </div>
@@ -193,12 +198,12 @@
     ]
     const l = strings.length
     const element = document.getElementById("big-text")
-    let oi = Math.ceil(Math.random() * (l - 1))
+    let oi = Math.floor(Math.random() * l)
 
     element.innerHTML = strings[oi]
 
     function random(oi) {
-      let n = Math.ceil(Math.random() * (l - 1))
+      let n = Math.floor(Math.random() * l)
       if (oi === n) {
         return random(oi)
       } else {
