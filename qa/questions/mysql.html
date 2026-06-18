@@ -113,3 +113,37 @@
     </ul>
   </div></div></div>
 </div>
+
+<!-- Q21 MySQL索引类型总结 -->
+
+<div class="q-card bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 fade-in" id="q21" data-cat="mysql" data-num="Q21" data-title="MySQL有哪些索引类型？不同索引有什么区别？" data-ans="B+Tree 哈希 全文 联合索引 聚簇索引 覆盖索引 前缀索引">
+  <button class="w-full text-left px-5 py-4 flex items-start gap-3" onclick="toggleA('q21')"><span class="shrink-0 mt-0.5 px-2 py-0.5 rounded text-xs font-bold bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300">Q21</span><span class="flex-1 font-medium text-sm sm:text-base leading-relaxed">MySQL有哪些索引类型？不同索引有什么区别？</span><svg class="chevron w-5 h-5 shrink-0 mt-0.5 text-gray-400" id="ch-q21" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button>
+  <div class="answer-content" id="ans-q21"><div class="px-5 pb-5 space-y-3"><div class="text-sm leading-relaxed prose dark:prose-invert max-w-none">
+    <p><strong>一、索引数据结构</strong></p>
+    <table class="w-full text-sm border-collapse border border-gray-300 dark:border-gray-600 mt-2">
+      <tr class="bg-gray-100 dark:bg-gray-700"><th class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">类型</th><th class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">结构</th><th class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">特点</th><th class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">适用场景</th></tr>
+      <tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5"><strong>B+Tree 索引</strong></td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">多叉平衡树，叶子节点双向链表</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">InnoDB 默认，支持等值、范围、排序</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">绝大多数查询场景</td></tr>
+      <tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5"><strong>哈希索引</strong></td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">哈希表</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">O(1) 等值查询，不支持范围和排序</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">Memory 引擎、自适应哈希</td></tr>
+      <tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5"><strong>全文索引</strong></td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">倒排索引</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">支持分词搜索，MATCH AGAINST</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">文本搜索（VARCHAR/TEXT）</td></tr>
+    </table>
+    <p class="mt-3"><strong>二、索引逻辑分类</strong></p>
+    <table class="w-full text-sm border-collapse border border-gray-300 dark:border-gray-600 mt-2">
+      <tr class="bg-gray-100 dark:bg-gray-700"><th class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">类型</th><th class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">说明</th><th class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">区别</th></tr>
+      <tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5"><strong>聚簇索引</strong></td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">主键索引，叶子节点存完整数据行</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">每表只有一个，InnoDB 自动选主键</td></tr>
+      <tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5"><strong>二级索引（辅助索引）</strong></td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">非主键索引，叶子存索引字段+主键值</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">可能需要回表查聚簇索引</td></tr>
+      <tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5"><strong>联合索引</strong></td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">多字段组合索引</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">遵循最左前缀，字段顺序影响性能</td></tr>
+      <tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5"><strong>覆盖索引</strong></td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">查询字段全在索引中，不需回表</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">EXPLAIN 显示 Using index，性能最优</td></tr>
+      <tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5"><strong>前缀索引</strong></td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">只索引字符串前 N 个字符</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">节省空间，但无法用于 ORDER BY</td></tr>
+    </table>
+    <p class="mt-3"><strong>三、场景对比</strong></p>
+    <table class="w-full text-sm border-collapse border border-gray-300 dark:border-gray-600 mt-2">
+      <tr class="bg-gray-100 dark:bg-gray-700"><th class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">场景</th><th class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">推荐索引</th><th class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">原因</th></tr>
+      <tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">等值查询 <code>=</code></td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">B+Tree / 哈希</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">两者都支持，哈希更快但无范围</td></tr>
+      <tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">范围查询 <code>&gt; &lt; BETWEEN</code></td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">B+Tree</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">叶子节点有序链表，天然支持范围</td></tr>
+      <tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">排序 <code>ORDER BY</code></td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">B+Tree</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">索引本身有序，避免 filesort</td></tr>
+      <tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">多条件组合</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">联合索引</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">一个索引覆盖多个条件，减少回表</td></tr>
+      <tr><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">文本模糊搜索</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">全文索引</td><td class="border border-gray-300 dark:border-gray-600 px-3 py-1.5">分词匹配，比 LIKE '%keyword%' 高效</td></tr>
+    </table>
+    <p class="mt-2"><strong>选型原则</strong>：优先 B+Tree（覆盖 90% 场景）；高频等值查询可考虑哈希；长文本字段用前缀索引节省空间；多条件查询用联合索引，区分度高的字段放前面。</p>
+  </div></div></div>
+</div>
