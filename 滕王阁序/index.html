@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>滕王阁序 · 王勃</title>
+  <meta name="description" content="千古第一骈文 · 唐 · 王勃 · 滕王阁序" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;600;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/x-icon" href="../favicon.ico" />
+  <style>
+    :root {
+      --paper: #FAFAF7;
+      --paper-warm: #F2EFE8;
+      --ink: #1F1B16;
+      --ink-soft: #5C5648;
+      --rule: #D6D2C8;
+      --rule-soft: #E8E4DD;
+      --vermilion: #B85042;
+      --clay: #B89484;
+      --brown: #8B6F47;
+      --sage: #7A8471;
+      --amber: #D4A64A;
+      --sky: #8CA8B8;
+      --dusk: #9B8EBA;
+      --cjk: "Noto Serif SC", "Source Han Serif CN", "Songti SC", "STSong", serif;
+      --western: "Cormorant Garamond", "Noto Serif SC", Georgia, serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--cjk);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      line-height: 1.85;
+    }
+
+    body {
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* --- 大气层背景：彩色光晕 + 纸张纹理 --- */
+    .paper-bg {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background:
+        /* 落霞光晕 — 右上大块暖琥珀色 */
+        radial-gradient(ellipse 120% 60% at 85% -5%, rgba(212, 166, 74, 0.10), transparent 55%),
+        /* 暮山紫 — 左下侧柔紫灰 */
+        radial-gradient(ellipse 90% 45% at 15% 85%, rgba(155, 142, 186, 0.06), transparent 50%),
+        /* 秋水蓝 — 中左冷色 */
+        radial-gradient(ellipse 70% 35% at 20% 50%, rgba(140, 168, 184, 0.05), transparent 50%),
+        /* 层峦翠 — 右下柔青 */
+        radial-gradient(ellipse 80% 40% at 95% 95%, rgba(122, 132, 113, 0.06), transparent 55%),
+        /* 画栋流丹 — 中心偏上暖赤 */
+        radial-gradient(ellipse 60% 30% at 50% 18%, rgba(184, 80, 66, 0.04), transparent 50%),
+        /* 秋日暖阳 — 顶部中 */
+        radial-gradient(ellipse 100% 50% at 50% -10%, rgba(212, 166, 74, 0.08), transparent 70%),
+        var(--paper);
+    }
+
+    /* 背景纹理：极细纸纹 + 随机纤维丝 */
+    .paper-bg::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(31, 27, 22, 0.012) 2px, rgba(31, 27, 22, 0.012) 3px),
+        repeating-linear-gradient(90deg, transparent, transparent 80px, rgba(31, 27, 22, 0.006) 80px, rgba(31, 27, 22, 0.006) 81px);
+      opacity: 0.6;
+    }
+
+    /* 纸张色相微渐变 — 模拟宣纸的不均匀着色 */
+    .paper-bg::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(175deg, rgba(250, 250, 247, 0) 0%, rgba(242, 239, 232, 0.4) 40%, rgba(250, 250, 247, 0) 70%),
+        linear-gradient(5deg, rgba(245, 242, 235, 0.3) 0%, transparent 50%);
+      opacity: 0.8;
+    }
+
+    /* --- 页面主体 --- */
+    .page {
+      position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* --- 顶部细线 --- */
+    .top-line {
+      display: flex;
+      justify-content: center;
+      padding: 96px 0 0 0;
+    }
+
+    .top-line .line {
+      width: 100px;
+      height: 1.5px;
+      background: linear-gradient(90deg, transparent, var(--amber), transparent);
+    }
+
+    /* --- 标题区 --- */
+    .title-section {
+      text-align: center;
+      padding: 48px 0 0 0;
+    }
+
+    .title-section h1 {
+      font-family: var(--cjk);
+      font-weight: 700;
+      font-size: 88px;
+      letter-spacing: 24px;
+      color: var(--ink);
+      line-height: 1.2;
+      margin-left: 24px;
+    }
+
+    .title-section .author {
+      font-family: var(--cjk);
+      font-size: 32px;
+      font-weight: 400;
+      letter-spacing: 12px;
+      color: var(--ink-soft);
+      margin-top: 20px;
+      margin-left: 12px;
+    }
+
+    .title-section .era {
+      font-family: var(--cjk);
+      font-size: 20px;
+      font-weight: 400;
+      letter-spacing: 6px;
+      color: var(--brown);
+      margin-top: 12px;
+    }
+
+    .title-section .title-deco {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 14px;
+      margin-top: 36px;
+    }
+
+    .title-section .title-deco .rule {
+      width: 60px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--amber), transparent);
+    }
+
+    .title-section .title-deco .dot {
+      width: 6px;
+      height: 6px;
+      background: var(--vermilion);
+      border-radius: 50%;
+    }
+
+    /* --- 装饰性流线分隔 --- */
+    .deco-wave {
+      display: flex;
+      justify-content: center;
+      padding: 32px 0 0 0;
+    }
+
+    .deco-wave svg {
+      width: 480px;
+      height: 40px;
+    }
+
+    .deco-wave svg path {
+      fill: none;
+      stroke: var(--amber);
+      stroke-width: 0.8;
+      opacity: 0.35;
+    }
+
+    .deco-wave-vermilion svg path {
+      stroke: var(--vermilion);
+      opacity: 0.25;
+    }
+
+    /* --- 正文区 --- */
+    .prose {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 48px 0 0 0;
+      display: flex;
+      flex-direction: column;
+      gap: 56px;
+      position: relative;
+    }
+
+    .prose::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 200px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(184, 148, 132, 0.3), transparent);
+    }
+
+    .prose p {
+      font-size: 18px;
+      line-height: 1.95;
+      color: var(--ink);
+      text-align: justify;
+      text-justify: inter-ideograph;
+      letter-spacing: 0.5px;
+    }
+
+    /* 首段首字下沉 */
+    .prose p.first::first-letter {
+      font-size: 64px;
+      font-weight: 600;
+      color: var(--vermilion);
+      float: left;
+      line-height: 1;
+      padding: 4px 12px 0 0;
+      font-family: var(--cjk);
+    }
+
+    /* --- 引文区 --- */
+    .pull-quote-section {
+      padding: 120px 0;
+      position: relative;
+      background:
+        radial-gradient(ellipse 120% 60% at 50% 50%, rgba(212, 166, 74, 0.06), transparent 60%),
+        radial-gradient(ellipse 80% 40% at 50% 0%, rgba(184, 148, 132, 0.05), transparent 60%);
+    }
+
+    .pull-quote-section::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 260px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(212, 166, 74, 0.5), transparent);
+    }
+
+    .pull-quote {
+      max-width: 760px;
+      margin: 0 auto;
+      background: linear-gradient(
+        180deg,
+        #F2EFE8 0%,
+        #F5F2EB 30%,
+        #F2EFE8 70%,
+        #F0ECE3 100%
+      );
+      padding: 72px 64px;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 0 80px rgba(184, 148, 132, 0.06);
+    }
+
+    .pull-quote::before,
+    .pull-quote::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--amber), transparent);
+    }
+
+    .pull-quote::before {
+      top: 32px;
+    }
+
+    .pull-quote::after {
+      bottom: 32px;
+    }
+
+    .pull-quote .line {
+      font-family: var(--cjk);
+      font-size: 42px;
+      font-weight: 600;
+      color: var(--ink);
+      letter-spacing: 12px;
+      line-height: 1.6;
+    }
+
+    .pull-quote .line + .line {
+      margin-top: 16px;
+    }
+
+    .pull-quote .attribution {
+      margin-top: 32px;
+      font-family: var(--western);
+      font-style: italic;
+      font-size: 14px;
+      color: var(--brown);
+      letter-spacing: 2px;
+    }
+
+    /* --- 诗篇区 --- */
+    .poem-section {
+      padding: 120px 0 80px 0;
+      text-align: center;
+      position: relative;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% 40%, rgba(140, 168, 184, 0.05), transparent 60%);
+    }
+
+    .poem-section .poem-title {
+      font-family: var(--cjk);
+      font-size: 34px;
+      font-weight: 600;
+      letter-spacing: 12px;
+      color: var(--ink);
+      margin-bottom: 20px;
+    }
+
+    .poem-section .poem-divider {
+      width: 40px;
+      height: 1.5px;
+      background: linear-gradient(90deg, transparent, rgba(140, 168, 184, 0.4), transparent);
+      margin: 0 auto 48px auto;
+    }
+
+    .poem-section .poem-body {
+      max-width: 520px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .poem-section .poem-body .couplet {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .poem-section .poem-body .couplet .line {
+      font-size: 20px;
+      font-weight: 400;
+      letter-spacing: 4px;
+      color: var(--ink);
+      line-height: 1.9;
+    }
+
+    /* --- 页脚 --- */
+    footer {
+      padding: 120px 0 60px 0;
+      text-align: center;
+      position: relative;
+      background:
+        radial-gradient(ellipse 100% 50% at 50% 0%, rgba(31, 27, 22, 0.03), transparent 70%);
+    }
+
+    footer .footer-divider {
+      width: 120px;
+      height: 1.5px;
+      background: linear-gradient(90deg, transparent, var(--amber), var(--vermilion), var(--amber), transparent);
+      margin: 0 auto 36px auto;
+    }
+
+    footer .footer-deco {
+      width: 8px;
+      height: 8px;
+      background: var(--vermilion);
+      border-radius: 50%;
+      margin: 0 auto 36px auto;
+    }
+
+    footer .footer-text {
+      font-family: var(--cjk);
+      font-size: 15px;
+      letter-spacing: 4px;
+      color: var(--brown);
+      margin-bottom: 12px;
+    }
+
+    footer .footer-sub {
+      font-family: var(--cjk);
+      font-size: 13px;
+      letter-spacing: 2px;
+      color: var(--clay);
+    }
+
+    footer .back-link {
+      display: inline-block;
+      margin-top: 48px;
+      font-family: var(--western);
+      font-style: italic;
+      font-size: 16px;
+      color: var(--ink-soft);
+      text-decoration: none;
+      letter-spacing: 1px;
+      border-bottom: 1px solid var(--rule);
+      padding-bottom: 2px;
+      transition: color 0.2s ease;
+    }
+
+    footer .back-link:hover {
+      color: var(--vermilion);
+      border-bottom-color: var(--vermilion);
+    }
+
+    /* --- 响应式 --- */
+    @media (max-width: 768px) {
+      .title-section h1 {
+        font-size: 56px;
+        letter-spacing: 14px;
+      }
+      .title-section .author {
+        font-size: 24px;
+        letter-spacing: 8px;
+      }
+      .prose {
+        padding: 56px 0 0 0;
+        gap: 40px;
+      }
+      .prose p {
+        font-size: 16px;
+        line-height: 1.95;
+      }
+      .pull-quote-section {
+        padding: 80px 0;
+      }
+      .pull-quote {
+        padding: 56px 28px;
+      }
+      .pull-quote .line {
+        font-size: 28px;
+        letter-spacing: 6px;
+      }
+      .poem-section .poem-body .couplet .line {
+        font-size: 17px;
+        letter-spacing: 2px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .title-section h1 {
+        font-size: 42px;
+        letter-spacing: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="paper-bg"></div>
+
+  <div class="page">
+    <!-- 顶部细线 -->
+    <div class="top-line">
+      <div class="line"></div>
+    </div>
+
+    <!-- 标题区 -->
+    <header class="title-section">
+      <h1>滕王阁序</h1>
+      <div class="author">王勃</div>
+      <div class="era">〔唐〕</div>
+      <div class="title-deco">
+        <div class="rule"></div>
+        <div class="dot"></div>
+        <div class="rule"></div>
+      </div>
+    </header>
+
+    <!-- 装饰流线 -->
+    <div class="deco-wave">
+      <svg viewBox="0 0 480 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0,20 Q60,-5 120,20 Q180,45 240,20 Q300,-5 360,20 Q420,45 480,20" />
+      </svg>
+    </div>
+
+    <!-- 正文 -->
+    <main class="prose">
+      <p class="first">豫章故郡，洪都新府。星分翼轸，地接衡庐。襟三江而带五湖，控蛮荆而引瓯越。物华天宝，龙光射牛斗之墟；人杰地灵，徐孺下陈蕃之榻。雄州雾列，俊采星驰。台隍枕夷夏之交，宾主尽东南之美。都督阎公之雅望，棨戟遥临；宇文新州之懿范，襜帷暂驻。十旬休假，胜友如云；千里逢迎，高朋满座。腾蛟起凤，孟学士之词宗；紫电青霜，王将军之武库。家君作宰，路出名区；童子何知，躬逢胜饯。</p>
+
+      <p>时维九月，序属三秋。潦水尽而寒潭清，烟光凝而暮山紫。俨骖騑于上路，访风景于崇阿。临帝子之长洲，得天人之旧馆。层峦耸翠，上出重霄；飞阁流丹，下临无地。鹤汀凫渚，穷岛屿之萦回；桂殿兰宫，即冈峦之体势。</p>
+
+      <p>披绣闼，俯雕甍，山原旷其盈视，川泽纡其骇瞩。闾阎扑地，钟鸣鼎食之家；舸舰弥津，青雀黄龙之舳。云销雨霁，彩彻区明。</p>
+    </main>
+
+    <!-- 装饰流线 -->
+    <div class="deco-wave deco-wave-vermilion">
+      <svg viewBox="0 0 480 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0,20 Q120,45 240,20 Q360,-5 480,20" />
+      </svg>
+    </div>
+
+    <!-- 引文区 -->
+    <section class="pull-quote-section">
+      <div class="pull-quote">
+        <div class="line">落霞与孤鹜齐飞</div>
+        <div class="line">秋水共长天一色</div>
+        <div class="attribution">— THE PINNACLE OF ALL TANG PROSE —</div>
+      </div>
+    </section>
+
+    <!-- 正文续 -->
+    <main class="prose">
+      <p>渔舟唱晚，响穷彭蠡之滨；雁阵惊寒，声断衡阳之浦。</p>
+
+      <p>遥襟甫畅，逸兴遄飞。爽籁发而清风生，纤歌凝而白云遏。睢园绿竹，气凌彭泽之樽；邺水朱华，光照临川之笔。四美具，二难并。穷睇眄于中天，极娱游于暇日。天高地迥，觉宇宙之无穷；兴尽悲来，识盈虚之有数。望长安于日下，目吴会于云间。地势极而南溟深，天柱高而北辰远。关山难越，谁悲失路之人；萍水相逢，尽是他乡之客。怀帝阍而不见，奉宣室以何年？</p>
+
+      <p>嗟乎！时运不齐，命途多舛。冯唐易老，李广难封。屈贾谊于长沙，非无圣主；窜梁鸿于海曲，岂乏明时？所赖君子见机，达人知命。老当益壮，宁移白首之心？穷且益坚，不坠青云之志。酌贪泉而觉爽，处涸辙以犹欢。北海虽赊，扶摇可接；东隅已逝，桑榆非晚。孟尝高洁，空余报国之情；阮籍猖狂，岂效穷途之哭！</p>
+
+      <p>勃，三尺微命，一介书生。无路请缨，等终军之弱冠；有怀投笔，慕宗悫之长风。舍簪笏于百龄，奉晨昏于万里。非谢家之宝树，接孟氏之芳邻。他日趋庭，叨陪鲤对；今兹捧袂，喜托龙门。杨意不逢，抚凌云而自惜；钟期既遇，奏流水以何惭？</p>
+
+      <p>呜呼！胜地不常，盛筵难再；兰亭已矣，梓泽丘墟。临别赠言，幸承恩于伟饯；登高作赋，是所望于群公。敢竭鄙怀，恭疏短引；一言均赋，四韵俱成。请洒潘江，各倾陆海云尔。</p>
+    </main>
+
+    <!-- 诗篇区 -->
+    <section class="poem-section">
+      <h2 class="poem-title">滕王阁诗</h2>
+      <div class="poem-divider"></div>
+      <div class="poem-body">
+        <div class="couplet">
+          <div class="line">滕王高阁临江渚，佩玉鸣鸾罢歌舞。</div>
+          <div class="line">画栋朝飞南浦云，珠帘暮卷西山雨。</div>
+        </div>
+        <div class="couplet">
+          <div class="line">闲云潭影日悠悠，物换星移几度秋。</div>
+          <div class="line">阁中帝子今何在？槛外长江空自流。</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 装饰流线 -->
+    <div class="deco-wave">
+      <svg viewBox="0 0 480 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0,20 Q60,40 120,20 Q180,0 240,20 Q300,40 360,20 Q420,0 480,20" />
+      </svg>
+    </div>
+
+    <!-- 页脚 -->
+    <footer>
+      <div class="footer-divider"></div>
+      <div class="footer-deco"></div>
+      <div class="footer-text">唐 · 王勃《滕王阁序》</div>
+      <div class="footer-sub">千古第一骈文 · 公元六七五年作于南昌滕王阁</div>
+      <a href="../index.html" class="back-link">← 返回首页</a>
+    </footer>
+  </div>
+</body>
+</html>
