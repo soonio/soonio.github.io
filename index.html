@@ -1,246 +1,289 @@
 <!doctype html>
-<html lang="en">
-
+<html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <meta name="description" content="让清流与你分享更多技术">
-  <meta property="og:title" content="一股清流">
-  <meta property="og:description" content="让清流与你分享更多技术。">
-  <meta property="og:image" content="assert/logo.svg">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#102622">
+  <meta name="description" content="清流 · 山水之间，读几行诗。">
+  <meta property="og:title" content="清流 · 山水之间">
+  <meta property="og:description" content="明月松间照，清泉石上流。">
   <meta property="og:type" content="website">
-  <link rel="icon" href="assert/logo.svg" type="image/svg+xml" />
-  <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
-  <link rel="apple-touch-icon" href="assert/apple-icon.png">
-  <title>一股清流</title>
+  <link rel="icon" href="assert/logo.svg" type="image/svg+xml">
+  <title>清流 · 山水之间</title>
   <style>
-    html,
-    body {
-      color: #636b6f;
-      font-family: 'Raleway', sans-serif;
-      font-weight: 100;
-      height: 100vh;
-      margin: 0;
+    :root {
+      --gutter: clamp(24px, 5.5vw, 128px);
+      color-scheme: dark;
+      --sky: #102622;
+      --sky-top: #071714;
+      --ink: #ecebdc;
+      --muted: #adbbb1;
+      --line: #718f7938;
+      --accent: #d6be8f;
+      --seal: #ce604b;
+      --ridge-back: #36564b;
+      --ridge-mid: #233e34;
+      --ridge-front: #112a23;
+      --serif: "Songti SC", "STSong", "Noto Serif CJK SC", "Source Han Serif SC", "SimSun", serif;
+      --sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
     }
-
-    body {
-      background: #f0f2f5 url(assert/background.svg) no-repeat 50%
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--sky); color: var(--ink); font: 14px/1.6 var(--sans); transition: background 1s; }
+    button { color: inherit; font: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+    button:focus-visible { outline: 2px solid var(--accent); outline-offset: 6px; }
+    button:active { transform: translateY(1px); }
+    ::selection { background: #ce604b; color: #fff8e7; }
+    .page { position: relative; display: flex; flex-direction: column; min-height: 100svh; overflow: hidden; isolation: isolate; background: linear-gradient(160deg, var(--sky-top), var(--sky) 72%); }
+    .grain { position: absolute; z-index: 5; inset: 0; pointer-events: none; opacity: .09; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Cpath fill='%23fff' filter='url(%23n)' opacity='.7' d='M0 0h180v180H0z'/%3E%3C/svg%3E"); }
+    main { flex: 1; display: flex; flex-direction: column; }
+    .wrap { width: min(1920px, 100%); margin: 0 auto; padding-inline: var(--gutter); }
+    .header { flex-shrink: 0; position: relative; z-index: 3; display: flex; justify-content: space-between; align-items: center; min-height: 112px; gap: 24px; }
+    .brand { display: flex; align-items: center; gap: 15px; }
+    .brand-mark { width: 35px; height: 39px; display: grid; place-items: center; border: 1px solid var(--ink); font: 23px var(--serif); border-radius: 45% 45% 3px 3px; }
+    .brand-name { font: 22px var(--serif); letter-spacing: .25em; }
+    .brand-note { font-size: 10px; letter-spacing: .24em; color: var(--muted); margin-top: 4px; }
+    .header-right { display: flex; align-items: center; gap: 34px; }
+    .header-note { color: var(--muted); font: 13px var(--serif); letter-spacing: .2em; }
+    .motion-button { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 10px 0 10px 12px; min-height: 44px; background: none; border: 0; color: var(--muted); font-size: 12px; transition: color .2s; }
+    .motion-button:hover { color: var(--ink); }
+    .motion-icon { width: 16px; height: 16px; }
+    .motion-icon path { stroke: currentColor; fill: none; stroke-width: 1.3; }
+    .hero { position: relative; flex: 1; min-height: 610px; display: flex; align-items: center; }
+    .landscape { position: absolute; z-index: -1; inset: 0; overflow: hidden; pointer-events: none; }
+    .sky-glow { position: absolute; inset: 0; background: radial-gradient(ellipse at 77% 32%, #a9c6a51a, transparent 45%); }
+    .moon { position: absolute; width: clamp(210px, 25vw, 390px); aspect-ratio: 1; left: 65%; top: 9%; border-radius: 50%; background: radial-gradient(circle at 38% 32%, #eee9cf 0%, #d5d5b5 55%, #aabca0 100%); box-shadow: 0 0 80px #d5dcc512, 0 0 180px #d5dcc509; transition: background 1.2s, transform 1.2s; }
+    .moon::after { content: ""; position: absolute; inset: 0; border-radius: inherit; opacity: .3; background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='m'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.035' numOctaves='4' seed='8'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Ccircle cx='100' cy='100' r='100' filter='url(%23m)' opacity='.7'/%3E%3C/svg%3E"); mix-blend-mode: multiply; }
+    .moon-orbit { position: absolute; width: 42vw; max-width: 620px; aspect-ratio: 1; border: 1px solid #cad4b612; border-radius: 50%; top: -4%; left: 56.5%; }
+    .stars { position: absolute; width: 3px; height: 3px; top: 18%; left: 51%; background: #e5e4ce88; border-radius: 50%; box-shadow: 68px 137px 0 -1px #d6dac9, 331px -42px 0 -1px #d6dac9, 440px 93px 0 -1px #d6dac9, -176px -39px 0 -1px #d6dac9, 290px 230px 0 -1px #d6dac9; }
+    .mountains { position: absolute; inset: auto 0 0; width: 100%; height: 77%; }
+    .ridge-back { fill: var(--ridge-back); opacity: .65; transition: fill 1.2s; }
+    .ridge-mid { fill: var(--ridge-mid); transition: fill 1.2s; }
+    .ridge-front { fill: var(--ridge-front); transition: fill 1.2s; }
+    .ridge-line { fill: none; stroke: #b8c4a4; stroke-width: .7; opacity: .15; }
+    .mist { position: absolute; width: 120%; height: 150px; left: -10%; bottom: 27%; background: radial-gradient(ellipse, #cad1b314, transparent 65%); filter: blur(16px); animation: drift 18s ease-in-out infinite alternate; }
+    .mist-low { bottom: 10%; opacity: .6; animation-delay: -8s; }
+    .water { position: absolute; right: 12%; bottom: 6%; width: 22%; height: 26%; opacity: .18; transform: skewX(-25deg); background: repeating-linear-gradient(0deg, transparent 0 14px, #c7d2ae 15px, transparent 16px 23px); mask-image: radial-gradient(ellipse, #000, transparent 70%); }
+    .birds { position: absolute; width: 100px; right: 31%; top: 40%; fill: none; stroke: #cad0b8; stroke-width: 1.2; opacity: .6; }
+    .hero-content { width: 100%; position: relative; padding-block: 48px 84px; }
+    .eyebrow { display: flex; align-items: center; gap: 15px; color: var(--accent); font-size: 11px; letter-spacing: .22em; margin: 0 0 34px; }
+    .eyebrow::before { content: ""; width: 28px; height: 1px; background: var(--accent); }
+    h1 { font: 400 clamp(50px, 6.15vw, 91px)/1.43 var(--serif); letter-spacing: .035em; margin: 0 0 26px -.06em; text-shadow: 0 2px 40px #07171440; }
+    h1 span { display: block; }
+    .poem-meta { display: flex; align-items: center; gap: 18px; margin: 0; color: var(--muted); font: 14px var(--serif); letter-spacing: .1em; }
+    .poem-meta::before { content: ""; width: 22px; height: 1px; background: var(--muted); opacity: .6; }
+    .poem-rest { margin: 32px 0 0; color: #cad4c7; font: 15px/2 var(--serif); letter-spacing: .13em; }
+    .seal { display: inline-grid; place-items: center; width: 32px; height: 35px; margin-top: 28px; border: 1px solid var(--seal); color: var(--seal); font: 16px/1.05 var(--serif); transform: rotate(-5deg); }
+    .vertical-note { position: absolute; right: var(--gutter); top: 37%; writing-mode: vertical-rl; font: 12px var(--serif); letter-spacing: .45em; color: #c6d0bd; }
+    .scene-number { position: absolute; right: var(--gutter); bottom: 55px; display: flex; align-items: baseline; gap: 9px; font: 12px Georgia, serif; color: var(--muted); }
+    .scene-number strong { font-size: 42px; font-weight: 400; color: var(--ink); }
+    .collection { position: relative; z-index: 2; }
+    .collection-heading { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding-bottom: 18px; border-bottom: 1px solid var(--line); }
+    .collection-heading h2 { font: 13px var(--serif); letter-spacing: .15em; margin: 0; color: var(--muted); }
+    .collection-heading p { font-size: 10px; letter-spacing: .16em; margin: 0; color: var(--muted); }
+    .poem-list { display: grid; grid-template-columns: repeat(3, 1fr); }
+    .poem-choice { position: relative; display: grid; grid-template-columns: 28px 1fr 24px; align-items: start; gap: 14px; text-align: left; background: transparent; border: 0; border-bottom: 1px solid var(--line); padding: 29px 26px 30px 0; transition: background .3s; min-width: 0; }
+    .poem-choice + .poem-choice { padding-left: 27px; }
+    .poem-choice + .poem-choice::before { content: ""; width: 1px; height: 42px; background: var(--line); position: absolute; left: 0; top: 31px; }
+    .poem-choice::after { content: ""; position: absolute; inset: -1px auto auto 0; width: 0; height: 2px; background: var(--accent); transition: width .45s; }
+    .poem-choice[aria-pressed="true"]::after { width: 100%; }
+    .poem-choice:hover { background: #ccd1b905; }
+    .choice-number { font: italic 14px Georgia, serif; color: var(--muted); padding-top: 5px; }
+    .choice-name { display: block; font: 22px var(--serif); letter-spacing: .15em; margin-bottom: 7px; }
+    .choice-line { font: 12px var(--serif); color: var(--muted); letter-spacing: .07em; }
+    .choice-icon { width: 23px; height: 23px; margin-top: 9px; fill: none; stroke: var(--muted); stroke-width: 1; transition: transform .3s, stroke .3s; }
+    .poem-choice[aria-pressed="true"] .choice-icon { stroke: var(--accent); transform: rotate(-45deg); }
+    .footer { flex-shrink: 0; position: relative; z-index: 2; display: flex; justify-content: space-between; flex-wrap: wrap; align-items: center; gap: 12px 24px; padding-block: 25px 28px; color: var(--muted); font-size: 10px; letter-spacing: .08em; }
+    .footer p { margin: 0; }
+    .footer-verse { font: 12px var(--serif); letter-spacing: .2em; }
+    .page[data-scene="1"] { --sky: #182630; --sky-top: #0c1823; --ridge-back: #3a5660; --ridge-mid: #243d49; --ridge-front: #142d36; --accent: #c5d6d1; --line: #8cabb73b; }
+    .page[data-scene="1"] .moon { transform: translate(-8%, 8%) scale(.88); }
+    .page[data-scene="2"] { --sky: #302b24; --sky-top: #1b201d; --ridge-back: #67654a; --ridge-mid: #414a37; --ridge-front: #222f27; --accent: #e7c08c; --line: #b4a5833b; }
+    .page[data-scene="2"] .moon { background: radial-gradient(circle at 40% 30%, #f3dcac, #cba573); transform: translate(-12%, 14%) scale(.95); }
+    .paused .mist { animation-play-state: paused; }
+    @keyframes drift { from { transform: translateX(-5%); } to { transform: translateX(5%); } }
+    @media (min-width: 901px) and (max-width: 1599px) and (min-height: 800px) {
+      .hero { min-height: 520px; }
+      .hero-content { padding-block: 32px 40px; }
+      h1 { font-size: clamp(50px, min(6.15vw, 8.5svh), 91px); }
     }
-
-    .full-height {
-      height: 100vh;
-      min-height: 400px;
+    @media (min-width: 1600px) {
+      .header { min-height: 128px; }
+      .hero { min-height: 640px; }
+      .hero-content { padding-block: 48px; }
+      h1 { font-size: clamp(88px, min(5vw, 8.5svh), 116px); }
+      .eyebrow { font-size: 12px; }
+      .poem-meta { font-size: 16px; }
+      .poem-rest { font-size: 18px; }
+      .moon { left: 60%; top: 12%; width: clamp(390px, 22vw, 540px); }
+      .moon-orbit { left: 54%; top: 3%; width: 36vw; max-width: 820px; }
+      .mountains { height: 76%; }
+      .vertical-note { top: 32%; font-size: 14px; }
+      .scene-number { bottom: 64px; }
+      .scene-number strong { font-size: 52px; }
+      .collection-heading { padding-bottom: 22px; }
+      .collection-heading h2 { font-size: 15px; }
+      .collection-heading p { font-size: 12px; }
+      .poem-choice { padding-block: 34px; }
+      .choice-name { font-size: 26px; }
+      .choice-line { font-size: 14px; }
+      .footer { padding-block: 30px 34px; font-size: 12px; }
+      .footer-verse { font-size: 14px; }
     }
-
-    .flex-center {
-      align-items: center;
-      display: flex;
-      justify-content: center;
+    @media (max-width: 900px) {
+      .header { min-height: 96px; }
+      .hero { min-height: 620px; height: auto; }
+      .moon { left: 64%; top: 16%; width: 260px; opacity: .8; }
+      .moon-orbit { left: 54%; top: 9%; width: 440px; }
+      .poem-choice { gap: 9px; padding-right: 15px; }
+      .poem-choice + .poem-choice { padding-left: 16px; }
+      .choice-line { font-size: 11px; }
+      .choice-name { font-size: 20px; }
     }
-
-    .position-ref {
-      position: relative;
+    @media (max-width: 600px) {
+      .header { min-height: 90px; }
+      .brand-name { font-size: 20px; }
+      .header-note { display: none; }
+      .motion-button { font-size: 11px; }
+      .hero { min-height: 660px; align-items: flex-end; }
+      .hero-content { padding-block: 210px 72px; }
+      .eyebrow { font-size: 10px; margin-bottom: 23px; }
+      h1 { font-size: clamp(39px, 10vw, 60px); line-height: 1.5; margin-bottom: 22px; }
+      .page[data-scene="1"] h1, .page[data-scene="2"] h1 { font-size: clamp(27px, 8.5vw, 48px); }
+      .poem-meta { font-size: 12px; }
+      .poem-rest { font-size: 13px; letter-spacing: .08em; margin-top: 23px; }
+      .seal { margin-top: 24px; }
+      .moon { left: auto; right: 10%; top: 100px; width: 190px; opacity: .9; }
+      .moon-orbit { left: auto; right: -3%; top: 60px; width: 290px; }
+      .mountains { width: 190%; max-width: none; left: -64%; height: 65%; opacity: .8; }
+      .birds { right: 22%; top: 280px; width: 70px; }
+      .vertical-note { top: 42px; font-size: 10px; right: 25px; letter-spacing: .3em; }
+      .scene-number { bottom: 35px; font-size: 10px; }
+      .scene-number strong { font-size: 29px; }
+      .collection-heading p { font-size: 9px; letter-spacing: .06em; }
+      .poem-list { grid-template-columns: 1fr; }
+      .poem-choice, .poem-choice + .poem-choice { padding: 22px 4px; gap: 16px; grid-template-columns: 26px 1fr 24px; }
+      .poem-choice + .poem-choice::before { display: none; }
+      .choice-name { font-size: 21px; }
+      .choice-line { font-size: 12px; }
+      .footer { padding-block: 25px 30px; gap: 16px; }
+      .footer-verse { width: 100%; }
     }
-
-    .content {
-      min-width: 320px;
-      text-align: center;
-    }
-
-    .logo {
-      width: 40px
-    }
-
-    .title {
-      font-size: 84px;
-      margin-bottom: 30px;
-    }
-
-    .links>span {
-      color: #636b6f;
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: .1rem;
-      text-decoration: none;
-      text-transform: uppercase;
-    }
-
-    .links>a {
-      color: #636b6f;
-      padding: 0 25px;
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: .1rem;
-      text-decoration: none;
-      text-transform: uppercase;
-    }
-
-    .top-left {
-      position: absolute;
-      left: 10px;
-      top: 10px;
-    }
-
-    .logo {
-      margin-left: 14px;
-    }
-
-    .top-right {
-      position: absolute;
-      right: 10px;
-      top: 16px;
-    }
-
-    .footer {
-      font-size: 12px;
-      bottom: 0;
-      width: 100%;
-      height: 40px;
-      line-height: 20px;
-      text-align: center;
-      padding: 5px 0
-    }
-
-    @media screen and (max-width: 414px) {
-      .top-right {
-        display: none;
-      }
-
-      .logo {
-        margin-left: 0;
-      }
-
-      .title {
-        font-size: 34px;
-      }
-
-      .links>a {
-        padding: 0 15px;
-      }
-
-      .footer {
-        height: 60px;
-      }
-    }
-
-    @media (min-height:500px) {
-      .footer {
-        position: absolute;
-      }
-    }
-
-    .footer a {
-      color: #636b6f;
-      text-decoration: none;
-    }
-
-    .friends {
-      display: none;
-    }
-    .friends>a {
-      display: inline-block;
-      margin: 0 10px;
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
     }
   </style>
 </head>
-
 <body>
-  <div class="flex-center position-ref full-height">
-    <div class="content">
-      <div class="top-left">
-        <img src="assert/logo.svg" alt="logo" class="logo"> <span
-          style="vertical-align: top; height:40px;display:inline-block;line-height: 40px;">清流</span>
+  <div class="page" id="page" data-scene="0">
+    <div class="grain" aria-hidden="true"></div>
+        <div class="landscape" aria-hidden="true">
+          <div class="sky-glow"></div><div class="stars"></div><div class="moon-orbit"></div><div class="moon"></div>
+          <svg class="birds" viewBox="0 0 100 60"><path d="M4 32q7-5 12 1 4-9 11-8M49 15q6-4 10 1 4-7 10-6M76 41q5-3 8 1 3-6 8-5"/></svg>
+          <svg class="mountains" viewBox="0 0 1600 650" preserveAspectRatio="none">
+            <path class="ridge-back" d="M0 465 80 438 148 451 225 391 295 409 354 378 429 402 511 341 572 368 645 304 686 323 759 241 809 270 848 226 891 248 950 176 1005 206 1064 146 1106 164 1155 107 1200 143 1253 103 1284 134 1344 174 1390 140 1452 203 1519 178 1600 238V650H0Z"/>
+            <path class="ridge-line" d="m511 341 40 62 21-35m73-64 28 76 13-57m73-82 25 74 25-45m141-94 26 84 29-54m59-60 24 59 18-41m49-57 22 59 23-23m53-40 16 62 15-31"/>
+            <path class="ridge-mid" d="m0 504 110-32 95 14 91-40 96 22 84-50 84 9 75-53 69 27 71-36 82 30 82-67 69 17 85-64 64 35 73-29 64 32 71-45 86 45 86-20 68 37V650H0Z"/>
+            <path class="ridge-front" d="m0 492 101 15 82 45 88-6 109 55 109-24 91 43 85-10 94 20 84-4 97 24 80-10 90-15 78-38 79-11 61-50 71 18 77-35 65 13 59-41V650H0Z"/>
+            <g fill="none" stroke="#97ad8d" stroke-width="1" opacity=".12"><path d="m995 536 148-5m-100 26 129-4m-116 26 79-2m-180 26 161-5"/></g>
+          </svg>
+          <div class="mist"></div><div class="mist mist-low"></div><div class="water"></div>
+        </div>
+    <header class="header wrap">
+      <div class="brand" aria-label="清流">
+        <span class="brand-mark" aria-hidden="true">清</span>
+        <div><div class="brand-name">清流</div><div class="brand-note">QINGLIU</div></div>
       </div>
-      <div class="top-right links">
-        <a target="_blank" href="https://github.com/soonio">github</a>
-        <a target="_blank" href="https://notebook.iosoon.cn">notebook</a>
-        <a href="./qa/">面试题库</a>
+      <div class="header-right">
+        <span class="header-note">山水之间，读几行诗。</span>
+        <button class="motion-button" id="motion" type="button" aria-pressed="false" aria-label="静止画面">
+          <svg class="motion-icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M7 4v12M13 4v12"/></svg>
+          <span id="motion-label">静止画面</span>
+        </button>
       </div>
-
-      <div id="big-text" class="title"></div>
-
-      <div class="links">
-        <a class="github" target="_blank" href="https://github.com/soonio"><img width="20px" src="assert/github.svg"
-            alt="github"></a>
-        <a class="github" target="_blank" href="https://github.com/soonio/swagger-ui"><img width="20px"
-            src="assert/swagger.svg" alt="github"></a>
-        <a class="github" target="_blank" href="https://monster.iosoon.cn/"><img width="21px" src="./assert/octopus.svg"
-            alt="工具后台"></a>
-        <a class="github" href="./vscode/"><img width="21px" src="./assert/vscode.svg"
-            alt="vscode-keyshorts"></a>
-        <a class="github" href="./qa/"><img width="21px" src="./assert/document.svg"
-            alt="面试题库"></a>
-      </div>
-    </div>
-  </div>
-  <div class="footer">
-    版权所有：&copy; 2026 <span id="ql">清流</span> 备案号：<a target="_blank"
-      href="https://beian.miit.gov.cn/">皖ICP备2021001701号-1</a>
-    <div class="friends">
-      <a target="_blank" href="https://go-zero.dev/cn/">Go-Zero</a>|
-      <a target="_blank" href="https://hyperf.io">Hyperf</a>|
-      <a target="_blank" href="https://learnku.com">Learnku</a>|
-      <a target="_blank" href="https://gorm.io/zh_CN/">Gorm</a>|
-      <a target="_blank" href="https://developers.weixin.qq.com">Wechat Developers</a>
-    </div>
+    </header>
+    <main>
+      <section class="hero wrap" aria-labelledby="verse">
+        <div class="hero-content" id="poem" aria-live="polite" aria-atomic="true">
+          <p class="eyebrow" id="scene-label">第一境 · 空山新雨</p>
+          <h1 id="verse"><span>明月松间照，</span><span>清泉石上流。</span></h1>
+          <p class="poem-meta"><span id="author">唐 · 王维</span><span id="poem-title">《山居秋暝》</span></p>
+          <p class="poem-rest" id="poem-rest">空山新雨后，天气晚来秋。<br>竹喧归浣女，莲动下渔舟。</p>
+          <span class="seal" aria-hidden="true">清<br>流</span>
+        </div>
+        <span class="vertical-note" id="vertical-note" aria-hidden="true">随意春芳歇，王孙自可留。</span>
+        <div class="scene-number" aria-hidden="true"><strong id="scene-number">01</strong><span>/ 03</span></div>
+      </section>
+      <section class="collection wrap" aria-labelledby="collection-title">
+        <div class="collection-heading"><h2 id="collection-title">拾三两诗意</h2><p>换一首诗，入另一重山水</p></div>
+        <div class="poem-list" role="group" aria-label="选择诗境">
+          <button class="poem-choice" type="button" data-index="0" aria-pressed="true"><span class="choice-number">01</span><span><span class="choice-name">空山</span><span class="choice-line">王维 · 山居秋暝</span></span><svg class="choice-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg></button>
+          <button class="poem-choice" type="button" data-index="1" aria-pressed="false"><span class="choice-number">02</span><span><span class="choice-name">江月</span><span class="choice-line">张若虚 · 春江花月夜</span></span><svg class="choice-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg></button>
+          <button class="poem-choice" type="button" data-index="2" aria-pressed="false"><span class="choice-number">03</span><span><span class="choice-name">远帆</span><span class="choice-line">李白 · 望天门山</span></span><svg class="choice-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg></button>
+        </div>
+      </section>
+    </main>
+    <footer class="footer wrap"><p class="footer-verse">且将新火试新茶，诗酒趁年华。</p><p>© <span id="year">2026</span> 清流</p><p>皖ICP备2021001701号-1</p></footer>
   </div>
   <script>
-    const strings = [
-      "功不唐捐，玉汝于成",
-      "虚怀若竹，清气若兰",
-      "奋发有为，时不我待",
-      "仁义为友，道德为师",
-      "微笑向暖，安之若素",
-      "心有猛虎，细嗅蔷薇",
-      "百年初心，历久弥新",
-      "奋斗百年路，启航新征程"
-    ]
-    const l = strings.length
-    const element = document.getElementById("big-text")
-    let oi = Math.floor(Math.random() * l)
-
-    element.innerHTML = strings[oi]
-
-    function random(oi) {
-      let n = Math.floor(Math.random() * l)
-      if (oi === n) {
-        return random(oi)
-      } else {
-        return n
+    const poems = [
+      { label: '第一境 · 空山新雨', lines: ['明月松间照，', '清泉石上流。'], author: '唐 · 王维', title: '《山居秋暝》', rest: ['空山新雨后，天气晚来秋。', '竹喧归浣女，莲动下渔舟。'], note: '随意春芳歇，王孙自可留。' },
+      { label: '第二境 · 江天一色', lines: ['春江潮水连海平，', '海上明月共潮生。'], author: '唐 · 张若虚', title: '《春江花月夜》节选', rest: ['滟滟随波千万里，', '何处春江无月明。'], note: '江畔何人初见月？江月何年初照人？' },
+      { label: '第三境 · 孤帆日边', lines: ['两岸青山相对出，', '孤帆一片日边来。'], author: '唐 · 李白', title: '《望天门山》', rest: ['天门中断楚江开，', '碧水东流至此回。'], note: '两岸青山相对出，孤帆一片日边来。' }
+    ];
+    const page = document.getElementById('page');
+    const poem = document.getElementById('poem');
+    const choices = [...document.querySelectorAll('.poem-choice')];
+    const motion = document.getElementById('motion');
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let current = 0;
+    let paused = reducedMotion.matches;
+    function setLines(id, lines, tag) {
+      const node = document.getElementById(id);
+      node.replaceChildren();
+      lines.forEach((line, index) => {
+        if (tag) {
+          const span = document.createElement(tag);
+          span.textContent = line;
+          node.append(span);
+        } else {
+          if (index) node.append(document.createElement('br'));
+          node.append(document.createTextNode(line));
+        }
+      });
+    }
+    function selectPoem(index) {
+      if (index === current) return;
+      current = index;
+      const selected = poems[index];
+      page.dataset.scene = String(index);
+      document.getElementById('scene-label').textContent = selected.label;
+      setLines('verse', selected.lines, 'span');
+      setLines('poem-rest', selected.rest);
+      document.getElementById('author').textContent = selected.author;
+      document.getElementById('poem-title').textContent = selected.title;
+      document.getElementById('vertical-note').textContent = selected.note;
+      document.getElementById('scene-number').textContent = String(index + 1).padStart(2, '0');
+      choices.forEach((button, i) => button.setAttribute('aria-pressed', String(i === index)));
+      poem.getAnimations().forEach(animation => animation.cancel());
+      if (!paused && !reducedMotion.matches) {
+        poem.animate([{ opacity: 0, transform: 'translateY(10px)' }, { opacity: 1, transform: 'translateY(0)' }], { duration: 650, easing: 'ease-out' });
       }
     }
-
-    let lock = false
-    setInterval(function () {
-      if (lock) {
-        return
-      } else {
-        lock = true
-      }
-
-      let counter = 50;
-      let half = false
-      const i = setInterval(function () {
-        if (half) {
-          element.style.opacity = (counter / 50).toString();
-          counter++;
-          if (counter >= 50) {
-            lock = false
-            clearInterval(i)
-          }
-        } else {
-          element.style.opacity = (counter / 50).toString();
-          counter--;
-          if (counter < 1) {
-            oi = random(oi)
-            element.innerHTML = strings[oi]
-            half = true
-          }
-        }
-      }, 50)
-    }, 10);
+    choices.forEach(button => button.addEventListener('click', () => selectPoem(Number(button.dataset.index))));
+    function syncMotion() {
+      page.classList.toggle('paused', paused);
+      motion.setAttribute('aria-pressed', String(paused));
+      const label = reducedMotion.matches ? '已减少动态' : paused ? '流动画面' : '静止画面';
+      motion.disabled = reducedMotion.matches;
+      if (paused) poem.getAnimations().forEach(animation => animation.cancel());
+      document.getElementById('motion-label').textContent = label;
+      motion.setAttribute('aria-label', label);
+      motion.querySelector('path').setAttribute('d', paused ? 'm7 4 8 6-8 6Z' : 'M7 4v12M13 4v12');
+    }
+    motion.addEventListener('click', () => { paused = !paused; syncMotion(); });
+    reducedMotion.addEventListener('change', event => { paused = event.matches; syncMotion(); });
+    syncMotion();
+    document.getElementById('year').textContent = new Date().getFullYear();
   </script>
 </body>
-
 </html>
