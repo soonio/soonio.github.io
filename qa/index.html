@@ -1,164 +1,403 @@
-<!DOCTYPE html>
-<html lang="zh-CN" class="scroll-smooth">
+<!doctype html>
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>面试题库 - 一股清流</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="icon" href="../assert/logo.svg" type="image/svg+xml">
-  <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/lua.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-  <script>tailwind.config={darkMode:'class',theme:{extend:{colors:{primary:'#2563eb',accent:'#10b981'}}}}</script>
+  <meta name="theme-color" content="#f6f8f7">
+  <meta name="description" content="Go、数据库、分布式与微服务面试题库。搜索知识点，阅读解析，记录自己的学习进度。">
+  <title>面试题库 · 清流</title>
+  <link rel="icon" href="../assert/qingliu-logo.svg" type="image/svg+xml">
+  <script>
+    try { if (localStorage.getItem('dark') === 'true') document.documentElement.classList.add('dark'); } catch {}
+  </script>
   <style>
-    body{font-family:'Noto Sans SC','Inter',system-ui,sans-serif}
-    .q-card{transition:all .3s ease}.q-card:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(0,0,0,.1)}
-    .answer-content{max-height:0;overflow:hidden;transition:max-height .5s ease-out}.answer-content.open{max-height:10000px}
-    .chevron{transition:opacity .2s ease}
-    .case-card{border-left:4px solid #10b981;background:linear-gradient(135deg,#ecfdf5 0%,#f0fdf4 100%)}
-    .dark .case-card{background:linear-gradient(135deg,#064e3b33 0%,#065f4633 100%);border-left-color:#34d399}
-    pre code{border-radius:8px;font-size:.875rem}
-    .mermaid{display:flex;justify-content:center;margin:1rem 0}.mermaid svg{max-width:100%}
-    .table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
-    .table-wrap table{white-space:nowrap}
-    ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}
-    .dark ::-webkit-scrollbar-thumb{background:#475569}
-    .fade-in{animation:fadeIn .3s ease-in}@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-    .cat-btn.active{background:#2563eb!important;color:#fff!important}
-    .loading-spinner{display:flex;justify-content:center;padding:4rem}.loading-spinner::after{content:'';width:2rem;height:2rem;border:3px solid #e5e7eb;border-top-color:#2563eb;border-radius:50%;animation:spin .6s linear infinite}
-    @keyframes spin{to{transform:rotate(360deg)}}
+    :root { color-scheme: light; --bg:#f6f8f7; --surface:#fff; --subtle:#f0f4f2; --text:#243b34; --muted:#64766e; --line:#e1e9e5; --accent:#24735d; --accent-soft:#e8f2ed; --hero:#edf4ef; --code:#172b25; --shadow:0 4px 20px #203f3106; }
+    :root.dark { color-scheme:dark; --bg:#111c18; --surface:#192720; --subtle:#213229; --text:#e2ece5; --muted:#a3b6a9; --line:#304239; --accent:#8bd0ac; --accent-soft:#283e31; --hero:#1d3025; --code:#0e1914; --shadow:none; }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; scroll-padding-top:96px; }
+    body { margin:0; color:var(--text); background:var(--bg); font:14px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; -webkit-font-smoothing:antialiased; }
+    button,input { font:inherit; }
+    button,a,input { -webkit-tap-highlight-color:transparent; }
+    button { cursor:pointer; color:inherit; }
+    button { border:0; }
+    a { color:inherit; text-decoration:none; }
+    button,a { transition:background .18s,color .18s,border-color .18s; }
+    button:disabled { cursor:default; opacity:.5; }
+    :focus-visible { outline:2px solid var(--accent); outline-offset:4px; }
+    ::selection { background:var(--accent); color:var(--surface); }
+    [hidden] { display:none!important; }
+    .icon { width:20px; height:20px; flex-shrink:0; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+    .skip-link { position:fixed; top:-80px; left:20px; z-index:100; padding:12px 20px; background:var(--surface); border:1px solid var(--accent); border-radius:8px; }
+    .skip-link:focus { top:12px; }
+    .site-header { height:76px; background:var(--surface); border-bottom:1px solid var(--line); position:sticky; top:0; z-index:20; }
+    .header-inner { max-width:1320px; height:100%; margin:auto; padding:0 40px; display:flex; align-items:center; justify-content:space-between; gap:20px; }
+    .brand { display:flex; align-items:center; gap:12px; }
+    .brand-symbol { width:34px; height:34px; display:grid; place-items:center; background:var(--accent); color:var(--surface); border-radius:10px; }
+    .brand-symbol .icon { width:21px; height:21px; }
+    .brand-name { font:600 21px/1.3 "Songti SC","STSong",serif; letter-spacing:.12em; }
+    .brand-divider { width:1px; height:20px; background:var(--line); margin:0 8px; }
+    .brand-section { color:var(--muted); font-size:13px; }
+    .header-actions { display:flex; align-items:center; gap:24px; }
+    .home-link { display:flex; align-items:center; gap:7px; font-size:13px; color:var(--muted); min-height:44px; }
+    .home-link:hover { color:var(--accent); }
+    .icon-button { width:40px; min-height:44px; display:grid; place-items:center; border-radius:9px; background:transparent; color:var(--muted); }
+    .icon-button:hover { background:var(--subtle); color:var(--accent); }
+    .sun-icon,.dark .moon-icon { display:none; } .dark .sun-icon { display:block; }
+    .app-layout { max-width:1320px; margin:0 auto; padding:36px 40px 24px; display:grid; grid-template-columns:220px minmax(0,1fr); gap:44px; align-items:start; }
+    .sidebar { position:sticky; top:112px; max-height:calc(100dvh - 136px); overflow-y:auto; scrollbar-width:thin; }
+    .nav-label { font-size:11px; font-weight:600; letter-spacing:.13em; color:var(--muted); margin:3px 14px 14px; }
+    .category-nav { display:flex; flex-direction:column; gap:5px; }
+    .cat-btn { background:transparent; display:flex; align-items:center; gap:12px; min-height:46px; width:100%; padding:10px 14px; border-radius:9px; text-align:left; color:var(--muted); white-space:nowrap; }
+    .cat-btn:hover { background:var(--subtle); color:var(--text); }
+    .cat-btn.active { background:var(--accent-soft); color:var(--accent); font-weight:600; }
+    .cat-btn.active .category-count { background:var(--surface); color:var(--accent); }
+    .category-count { margin-left:auto; font:11px/22px ui-monospace,SFMono-Regular,Consolas,monospace; text-align:center; min-width:25px; border-radius:5px; color:var(--muted); }
+    .category-divider { border-top:1px solid var(--line); margin:12px 14px; }
+    .study-card { margin:30px 0 0; border:1px solid var(--line); border-radius:12px; padding:18px; background:var(--surface); }
+    .study-card h2 { font-size:13px; font-weight:600; margin:0 0 14px; display:flex; align-items:center; gap:8px; }
+    .study-card .icon { width:17px; height:17px; color:var(--accent); }
+    .progress-detail { display:flex; align-items:baseline; gap:4px; color:var(--muted); font-size:12px; }
+    .progress-detail strong { font-size:23px; font-weight:600; color:var(--text); font-variant-numeric:tabular-nums; }
+    .progress-track { width:100%; height:5px; display:block; appearance:none; border:0; border-radius:9px; background:var(--subtle); margin:12px 0; overflow:hidden; }
+    .progress-track::-webkit-progress-bar { background:var(--subtle); border-radius:9px; }
+    .progress-track::-webkit-progress-value { background:var(--accent); border-radius:9px; }
+    .progress-track::-moz-progress-bar { background:var(--accent); border-radius:9px; }
+    .study-card p { margin:0; color:var(--muted); font-size:11px; line-height:1.8; }
+    .sidebar-note { margin:22px 14px; font:12px/1.8 "Songti SC","STSong",serif; color:var(--muted); letter-spacing:.08em; }
+    main { min-width:0; }
+    .hero { position:relative; overflow:hidden; background:var(--hero); border:1px solid var(--line); border-radius:16px; padding:30px 32px; min-height:194px; }
+    .eyebrow { margin:0 0 10px; color:var(--accent); font:10px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace; letter-spacing:.19em; display:flex; align-items:center; gap:9px; }
+    .eyebrow::before { content:""; width:17px; height:1px; background:currentColor; }
+    .hero h1 { position:relative; margin:0 0 10px; font-size:29px; font-weight:600; line-height:1.5; letter-spacing:.025em; z-index:1; }
+    .hero-description { position:relative; z-index:1; margin:0; color:var(--muted); font-size:13px; }
+    .hero-meta { margin-top:22px; display:flex; gap:18px; align-items:center; color:var(--muted); font-size:11px; }
+    .hero-meta strong { color:var(--accent); font-size:13px; font-weight:600; margin-right:3px; }
+    .meta-divider { height:12px; width:1px; background:var(--line); }
+    .hero-art { position:absolute; right:18px; top:11px; width:200px; height:185px; color:var(--accent); opacity:.18; pointer-events:none; }
+    .hero-art svg { width:100%; height:100%; }
+    .search-area { margin:26px 0 23px; }
+    .search-box { display:flex; align-items:center; gap:12px; padding:0 16px; height:52px; background:var(--surface); border:1px solid var(--line); border-radius:10px; box-shadow:var(--shadow); color:var(--muted); }
+    .search-box:focus-within { border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft); }
+    .search-box input { width:100%; min-width:0; height:100%; border:0; outline:0; background:transparent; color:var(--text); font-size:13px; }
+    .search-box input::placeholder { color:var(--muted); }
+    .search-box input::-webkit-search-cancel-button { appearance:none; }
+    .search-key { padding:0 7px; height:24px; border:1px solid var(--line); border-radius:5px; font-size:11px; color:var(--muted); }
+    .clear-search { display:grid; place-items:center; min-width:44px; height:44px; margin-right:-10px; background:transparent; color:var(--muted); }
+    .search-hint { margin:9px 2px 0; color:var(--muted); font-size:11px; }
+    .list-toolbar { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px; }
+    .list-title { display:flex; align-items:baseline; gap:10px; min-width:0; }
+    .list-title h2 { font-size:16px; font-weight:600; margin:0; }
+    .list-title span { color:var(--muted); font-size:12px; white-space:nowrap; }
+    .list-controls { display:flex; align-items:center; gap:12px; }
+    .filter-group { display:flex; padding:3px; background:var(--subtle); border-radius:7px; }
+    .view-filter { background:transparent; min-height:32px; padding:4px 11px; font-size:11px; color:var(--muted); border-radius:5px; }
+    .view-filter[aria-pressed="true"] { background:var(--surface); color:var(--text); box-shadow:0 1px 4px #14291e08; }
+    .expand-all { display:flex; align-items:center; gap:5px; background:transparent; font-size:12px; color:var(--muted); min-height:44px; padding:0; white-space:nowrap; }
+    .expand-all:hover { color:var(--accent); }
+    .expand-all .icon { width:15px; height:15px; }
+    #questionList { display:flex; flex-direction:column; gap:10px; }
+    .q-card { background:var(--surface); border:1px solid var(--line); border-radius:11px; box-shadow:var(--shadow); scroll-margin-top:96px; overflow:hidden; }
+    .q-card:hover { border-color:var(--accent); }
+    .q-card.is-open { border-color:var(--accent); }
+    .q-card > button { display:flex; width:100%; min-height:77px; align-items:center; gap:16px; padding:19px 20px; text-align:left; background:transparent; }
+    .q-card > button:focus-visible { outline-offset:-4px; border-radius:10px; }
+    .q-card > button > span:first-child { flex-shrink:0; display:grid; place-items:center; width:35px; height:29px; background:var(--subtle); color:var(--muted); border:1px solid var(--line); border-radius:6px; font:11px/1 ui-monospace,SFMono-Regular,Consolas,monospace; }
+    .q-card.is-open > button > span:first-child { background:var(--accent-soft); color:var(--accent); border-color:transparent; }
+    .question-heading { flex:1; min-width:0; }
+    .question-title { display:block; font-size:14px; font-weight:500; line-height:1.65; overflow-wrap:anywhere; margin:0; }
+    .question-meta { margin-top:5px; display:flex; align-items:center; gap:7px; font-size:10px; color:var(--muted); }
+    .question-meta::before { content:""; width:5px; height:5px; background:var(--accent); border-radius:50%; opacity:.65; }
+    .learned-label { color:var(--accent); margin-left:5px; }
+    .chevron { display:none; }
+    .disclosure-icon { width:17px; height:17px; color:var(--muted); transition:transform .2s; }
+    .is-open .disclosure-icon { transform:rotate(180deg); color:var(--accent); }
+    .answer-content { border-top:1px solid var(--line); }
+    .answer-content > div { padding:24px 26px 22px 71px; font-size:14px; line-height:1.9; overflow-wrap:anywhere; }
+    .answer-content p { margin:0 0 12px; }
+    .answer-content ul,.answer-content ol { padding-left:21px; margin:12px 0; }
+    .answer-content li { margin:5px 0; }
+    .answer-content strong { color:var(--text); font-weight:600; }
+    .answer-content code { font:12px/1.7 ui-monospace,SFMono-Regular,Consolas,monospace; background:var(--subtle); color:var(--accent); padding:2px 5px; border-radius:4px; }
+    .answer-content pre { overflow-x:auto; background:var(--code); border-radius:9px; padding:17px 19px; margin:16px 0; color:#e1ece5; }
+    .answer-content pre code { display:block; padding:0; background:transparent; color:inherit; white-space:pre; overflow-wrap:normal; }
+    .hljs-keyword,.hljs-selector-tag,.hljs-literal { color:#bdb5f0; } .hljs-string,.hljs-title,.hljs-built_in { color:#94d7bc; } .hljs-comment { color:#a0b5a9; } .hljs-number { color:#e9c390; }
+    .case-card { border:1px solid var(--line); border-left:3px solid var(--accent); padding:16px 18px; margin-top:22px; border-radius:0 8px 8px 0; background:var(--hero); font-size:13px; }
+    .case-card > p:first-child { font-size:11px; font-weight:600; color:var(--accent); margin-bottom:9px; }
+    .case-card p:last-child { margin-bottom:0; }
+    .table-wrap { overflow:auto; border:1px solid var(--line); border-radius:8px; margin:16px 0; }
+    .answer-content table { width:100%; font-size:12px; border-collapse:collapse; text-align:left; }
+    .answer-content th,.answer-content td { padding:10px 12px; border-bottom:1px solid var(--line); min-width:105px; }
+    .answer-content th { background:var(--subtle); color:var(--text); font-weight:600; }
+    .answer-content tr:last-child td { border-bottom:0; }
+    .mermaid { overflow:auto; margin:20px 0; padding:16px; border:1px solid var(--line); border-radius:8px; font:12px/1.8 ui-monospace,monospace; white-space:pre-wrap; }
+    .mermaid[data-processed] { display:flex; justify-content:center; background:#fff; }
+    .mermaid svg { max-width:100%; height:auto; flex-shrink:0; }
+    .answer-actions { display:flex; justify-content:flex-end; margin-top:24px; padding-top:16px; border-top:1px solid var(--line); }
+    .learn-button { display:flex; gap:7px; align-items:center; min-height:44px; background:var(--accent-soft); color:var(--accent); border:1px solid var(--line); border-radius:7px; padding:8px 13px; font-size:12px; }
+    .learn-button:hover { border-color:var(--accent); }
+    .learn-button .icon { width:16px; height:16px; }
+    .empty-state { text-align:center; border:1px dashed var(--line); border-radius:12px; padding:50px 24px; background:var(--surface); }
+    .empty-state > .icon { width:32px; height:32px; color:var(--muted); margin-bottom:10px; }
+    .empty-state h3 { font-size:16px; margin:0 0 8px; font-weight:500; }
+    .empty-state p { color:var(--muted); font-size:13px; margin:0 0 20px; }
+    .text-button { background:var(--accent-soft); color:var(--accent); padding:10px 16px; min-height:44px; border-radius:7px; }
+    .loading-state { display:flex; align-items:center; justify-content:center; gap:10px; padding:60px; color:var(--muted); }
+    .loading-state::before { content:""; width:17px; height:17px; border:2px solid var(--line); border-top-color:var(--accent); border-radius:50%; animation:spin .8s linear infinite; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    .page-footer { display:flex; justify-content:space-between; gap:12px; margin-top:30px; padding:20px 0 10px; border-top:1px solid var(--line); color:var(--muted); font-size:11px; }
+    .page-footer span:last-child { font-family:"Songti SC","STSong",serif; letter-spacing:.12em; }
+    .back-top { position:fixed; right:24px; bottom:24px; width:44px; height:44px; display:grid; place-items:center; border:1px solid var(--line); border-radius:10px; background:var(--surface); color:var(--accent); box-shadow:0 3px 14px #14291e12; z-index:15; }
+    .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+    @media(min-width:1440px) { .app-layout { gap:54px; } }
+    @media(max-width:1000px) { .app-layout { grid-template-columns:190px minmax(0,1fr); gap:28px; padding-inline:28px; } .header-inner { padding-inline:28px; } .hero-art { right:-20px; opacity:.1; } .hero { padding:26px; } .list-controls { gap:8px; } }
+    @media(max-width:760px) { .site-header { height:64px; } .header-inner { padding-inline:20px; } .header-actions { gap:12px; } .brand-divider,.brand-section { display:none; } .app-layout { display:block; padding:24px 20px; } .sidebar { position:static; max-height:none; overflow:visible; margin-bottom:22px; } .nav-label,.category-divider,.study-card,.sidebar-note { display:none; } .category-nav { flex-direction:row; overflow-x:auto; gap:6px; padding:3px 2px 10px; scrollbar-width:thin; } .cat-btn { min-height:44px; width:auto; gap:7px; padding:9px 12px; border:1px solid var(--line); background:var(--surface); } .cat-btn.active { border-color:var(--accent); } .cat-btn .icon { display:none; } .category-count { font-size:10px; min-width:19px; } .hero { padding:24px; min-height:180px; } .hero h1 { font-size:26px; } .hero-description { max-width:270px; line-height:1.9; } .hero-art { width:165px; right:-22px; top:20px; } .search-area { margin:20px 0 16px; } .search-box input { font-size:16px; } .list-toolbar { align-items:center; flex-wrap:wrap; gap:8px; } .list-title h2 { font-size:15px; } .view-filter { min-height:44px; } .q-card > button { padding:17px 15px; gap:11px; min-height:80px; } .q-card > button > span:first-child { width:31px; height:27px; } .question-title { font-size:14px; } .answer-content > div { padding:20px; } .page-footer span:last-child { display:none; } .back-top { right:14px; bottom:14px; } }
+    @media(max-width:420px) { .app-layout { padding-inline:16px; } .header-inner { padding-inline:16px; } .hero h1 { font-size:24px; } .hero { padding:22px; } .hero-meta { gap:12px; } .hero-meta > span { white-space:nowrap; } .hero-meta > span:nth-last-child(-n+2) { display:none; } .hero-art { opacity:.07; } .list-title { flex:1; } .list-controls { display:contents; } .filter-group { order:3; width:100%; margin-bottom:4px; } .view-filter { flex:1; min-height:44px; } .search-key { display:none; } }
+    @media(prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } *,*::before,*::after { animation:none!important; transition:none!important; } }
   </style>
 </head>
-<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200 transition-colors duration-300">
-<!-- NAV -->
-<nav class="fixed top-0 left-0 right-0 z-50 bg-white/90 dark:bg-gray-800/90 backdrop-blur-md border-b border-gray-200 dark:border-gray-700">
-  <div class="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between gap-3">
-    <div class="flex items-center gap-3 shrink-0">
-      <a href="../index.html" class="shrink-0 text-sm text-gray-400 hover:text-blue-600 transition-colors" title="返回首页">🏠</a>
-      <h1 class="text-lg font-bold bg-gradient-to-r from-blue-600 to-emerald-500 bg-clip-text text-transparent">📘 面试题库</h1>
-      <span class="hidden sm:inline text-xs text-gray-400">56题 · 8大分类</span>
-    </div>
-    <div class="flex items-center gap-2">
-      <button onclick="toggleDark()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"><span class="dark:hidden">🌙</span><span class="hidden dark:inline">☀️</span></button>
-    </div>
+<body>
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M12 5c-3-2-6-2-9-1v15c3-1 6-1 9 1 3-2 6-2 9-1V4c-3-1-6-1-9 1Zm0 0v15"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></symbol>
+  <symbol id="i-code" viewBox="0 0 24 24"><path d="m8 7-5 5 5 5m8-10 5 5-5 5m-3-14-2 18"/></symbol>
+  <symbol id="i-database" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 4 16 4 16 0V5M4 12c0 4 16 4 16 0"/></symbol>
+  <symbol id="i-bolt" viewBox="0 0 24 24"><path d="m13 2-9 12h7l-1 8 10-13h-8l1-7Z"/></symbol>
+  <symbol id="i-web" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M7 6.5h.01M10 6.5h.01m-2 6 3 2.5-3 2.5m5 0h3"/></symbol>
+  <symbol id="i-nodes" viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="16" y="16" width="6" height="6" rx="1"/><path d="M12 8v4M5 16v-4h14v4"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 7V5a2 2 0 0 1 2-2h5l2 3h7a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Zm0 2h18"/></symbol>
+  <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 3 10 5-10 5L2 8l10-5Zm-10 9 10 5 10-5M2 16l10 5 10-5"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></symbol>
+  <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20.8 13.5A9 9 0 0 1 10.5 3.2a9 9 0 1 0 10.3 10.3Z"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><path d="M12 20V4m-6 6 6-6 6 6"/></symbol>
+</svg>
+<a class="skip-link" href="#main">跳转到题目内容</a>
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="../index.html" aria-label="清流首页"><span class="brand-symbol"><svg class="icon" aria-hidden="true"><use href="#i-book"/></svg></span><span class="brand-name">清流</span><span class="brand-divider"></span><span class="brand-section">知识有迹，成长有声</span></a>
+    <div class="header-actions"><a class="home-link" href="../index.html"><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg>返回首页</a><button id="themeToggle" class="icon-button" type="button" aria-label="切换深色模式" aria-pressed="false" title="切换深色模式"><svg class="icon moon-icon" aria-hidden="true"><use href="#i-moon"/></svg><svg class="icon sun-icon" aria-hidden="true"><use href="#i-sun"/></svg></button></div>
   </div>
-  <div class="max-w-7xl mx-auto px-4 pb-2 flex justify-center gap-2 overflow-x-auto text-xs" id="tagBar">
-    <button onclick="filterCat('all',this)" class="cat-btn active px-3 py-1 rounded-full whitespace-nowrap">全部</button>
-    <button onclick="filterCat('go',this)" class="cat-btn px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-700 whitespace-nowrap">🔵 Go语言</button>
-    <button onclick="filterCat('mysql',this)" class="cat-btn px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-700 whitespace-nowrap">🟢 MySQL</button>
-    <button onclick="filterCat('redis',this)" class="cat-btn px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-700 whitespace-nowrap">🔴 Redis</button>
-    <button onclick="filterCat('web',this)" class="cat-btn px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-700 whitespace-nowrap">🟡 Web开发</button>
-    <button onclick="filterCat('dist',this)" class="cat-btn px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-700 whitespace-nowrap">🟣 分布式</button>
-    <button onclick="filterCat('project',this)" class="cat-btn px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-700 whitespace-nowrap">🟠 项目相关</button>
-    <button onclick="filterCat('arch',this)" class="cat-btn px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-700 whitespace-nowrap">🔷 微服务</button>
-    <button onclick="filterCat('perf',this)" class="cat-btn px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-700 whitespace-nowrap">⚡ 性能调优</button>
-  </div>
-</nav>
-
-<main class="pt-28 pb-20 px-4 max-w-4xl mx-auto">
-  <div id="questionList" class="space-y-4"><div class="loading-spinner"></div></div>
-  <div id="noResult" class="hidden text-center py-20 text-gray-400"><p class="text-4xl mb-4">🔍</p><p>没有找到匹配的题目</p></div>
-</main>
-<!-- 右下角悬浮按钮组 -->
-<div class="fixed bottom-6 right-6 flex flex-col gap-3 z-50">
-  <button id="toggleAllBtn" onclick="toggleAll()" title="全部展开/折叠" class="w-11 h-11 rounded-full bg-emerald-500 text-white shadow-lg flex items-center justify-center hover:bg-emerald-600 transition-all"><img id="toggleAllIcon" src="asserts/expand.svg" alt="全部展开" class="w-5 h-5 invert"></button>
-  <button id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="回到顶部" class="w-11 h-11 rounded-full bg-blue-600 text-white shadow-lg flex items-center justify-center opacity-0 pointer-events-none transition-all hover:bg-blue-700"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg></button>
+</header>
+<div class="app-layout">
+  <aside class="sidebar" aria-label="题库导航">
+    <p class="nav-label">探索知识 / TOPICS</p>
+    <nav id="categoryNav" class="category-nav" aria-label="题目分类"></nav>
+    <section class="study-card" aria-labelledby="progressTitle"><h2 id="progressTitle"><svg class="icon" aria-hidden="true"><use href="#i-book"/></svg>一点一滴，皆是积累</h2><div class="progress-detail"><strong id="learnedCount">0</strong><span>/ <span id="progressTotal">—</span> 题已掌握</span></div><progress id="studyProgress" class="progress-track" value="0" max="56" aria-label="已掌握题目进度"></progress><p>在解析末尾标记已掌握的题目。<br>进度仅保存在当前浏览器。</p></section>
+    <p class="sidebar-note">学而时习之，温故而知新。</p>
+  </aside>
+  <main id="main" tabindex="-1">
+    <section class="hero" aria-labelledby="pageTitle">
+      <p class="eyebrow">THE BACKEND HANDBOOK</p><h1 id="pageTitle">把知识，沉淀成底气。</h1><p class="hero-description">从语言基础到系统设计，让每一次温习都有收获。</p>
+      <div class="hero-meta"><span><strong id="totalCount">—</strong> 道精选题目</span><span class="meta-divider"></span><span><strong>8</strong> 个知识专题</span><span class="meta-divider"></span><span>解析 · 代码 · 实践</span></div>
+      <div class="hero-art" aria-hidden="true"><svg viewBox="0 0 200 190" fill="none" stroke="currentColor"><circle cx="110" cy="95" r="78" stroke-dasharray="2 7"/><circle cx="110" cy="95" r="58" stroke-width=".6"/><g transform="translate(48 53) rotate(-9 60 40)" stroke-width="1.5"><path d="M60 7C42-2 18-2 0 7v75c18-9 42-9 60 0 18-9 42-9 60 0V7C102-2 78-2 60 7Zm0 0v75"/><path d="M13 23c10-3 21-3 32 0m-32 13c10-3 21-3 32 0m-32 13c10-3 21-3 32 0m31-26c10-3 21-3 32 0m-32 13c10-3 21-3 32 0m-32 13c10-3 21-3 32 0"/></g><path d="M173 35v12m-6-6h12M31 136v10m-5-5h10"/></svg></div>
+    </section>
+    <div class="search-area" role="search"><label class="sr-only" for="questionSearch">搜索题目、知识点或题号</label><div class="search-box"><svg class="icon" aria-hidden="true"><use href="#i-search"/></svg><input id="questionSearch" type="search" placeholder="搜索题目、知识点或题号…" autocomplete="off" aria-describedby="searchHint" aria-controls="questionList"><kbd class="search-key" aria-hidden="true">/</kbd><button id="clearSearch" class="clear-search" aria-label="清空搜索" hidden><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button></div><p id="searchHint" class="search-hint">试试「goroutine」「索引」或「限流」，也可以按 / 快速搜索</p></div>
+    <section aria-labelledby="listTitle"><div class="list-toolbar"><div class="list-title"><h2 id="listTitle">全部题目</h2><span id="resultCount" role="status" aria-live="polite">加载中…</span></div><div class="list-controls"><div class="filter-group" role="group" aria-label="学习状态"><button class="view-filter" data-view="all" aria-pressed="true">全部题目</button><button class="view-filter" data-view="pending" aria-pressed="false">待掌握</button></div><button id="toggleAllBtn" class="expand-all" aria-expanded="false" aria-controls="questionList" disabled><svg class="icon" aria-hidden="true"><use href="#i-chevron"/></svg><span>展开全部</span></button></div></div>
+      <div id="questionList" aria-busy="true"><div class="loading-state" role="status">正在整理题目…</div></div>
+      <div id="noResult" class="empty-state" hidden><svg class="icon" aria-hidden="true"><use href="#i-search"/></svg><h3 id="emptyTitle">没有找到相关题目</h3><p id="emptyMessage">换个关键词试试，或查看其他知识专题。</p><button id="resetFilters" class="text-button">查看全部题目</button></div>
+      <div id="loadError" class="empty-state" role="alert" hidden><h3>题目暂时没有加载成功</h3><p>请检查网络连接后重试。</p><button id="retryLoad" class="text-button">重新加载</button></div>
+    </section>
+    <footer class="page-footer"><span>清流 · 后端开发面试题库</span><span>不疾不徐，日有所进。</span></footer>
+  </main>
 </div>
+<button id="backTop" class="back-top" aria-label="回到顶部" title="回到顶部" hidden><svg class="icon" aria-hidden="true"><use href="#i-up"/></svg></button>
+<p id="saveStatus" class="sr-only" role="status" aria-live="polite"></p>
+<noscript><p style="padding:24px;text-align:center">请启用 JavaScript 以浏览和搜索题库。</p></noscript>
 <script>
-mermaid.initialize({startOnLoad:false,theme:'default',securityLevel:'loose'});
-
-// ===== 题目文件映射（新增分类只需加一行） =====
-const Q_FILES={
-  go:'questions/go.html',
-  mysql:'questions/mysql.html',
-  redis:'questions/redis.html',
-  web:'questions/web.html',
-  dist:'questions/dist.html',
-  project:'questions/project.html',
-  arch:'questions/arch.html',
-  perf:'questions/perf.html'
+const categories = {
+  all:{name:'全部题目',icon:'grid'}, go:{name:'Go 语言',icon:'code'}, mysql:{name:'MySQL',icon:'database'},
+  redis:{name:'Redis',icon:'bolt'}, web:{name:'Web 开发',icon:'web'}, dist:{name:'分布式',icon:'nodes'},
+  project:{name:'项目实践',icon:'folder'}, arch:{name:'微服务架构',icon:'layers'}, perf:{name:'性能调优',icon:'bolt'}
 };
+const Q_FILES = Object.fromEntries(Object.keys(categories).filter(key => key !== 'all').map(key => [key, `questions/${key}.html`]));
+const $ = id => document.getElementById(id);
+const icon = name => `<svg class="icon" aria-hidden="true"><use href="#i-${name}"/></svg>`;
+let cards = [], curCat = 'all', curView = 'all', learned = new Set(), diagramQueue = Promise.resolve();
+try { const saved = JSON.parse(localStorage.getItem('qa-learned') || '[]'); if (Array.isArray(saved)) learned = new Set(saved.filter(id => typeof id === 'string')); } catch {}
 
-let allOpen=false,curCat='all';
-const $list=document.getElementById('questionList');
-const $noR=document.getElementById('noResult');
-
-// ===== 加载所有题目文件 =====
-async function loadQuestions(){
-  try{
-    const res=await Promise.all(Object.values(Q_FILES).map(f=>fetch(f).then(r=>{if(!r.ok)throw new Error(f);return r.text()})));
-    $list.innerHTML=res.join('\n');
-    initPlugins();
-  }catch(e){console.error('加载题目失败:',e);$list.innerHTML='<p class="text-center text-red-500 py-10">加载失败，请刷新重试</p>'}
+function renderCategories() {
+  $('categoryNav').innerHTML = Object.entries(categories).map(([key, cat]) => `${key === 'go' ? '<div class="category-divider" aria-hidden="true"></div>' : ''}<button class="cat-btn${curCat === key ? ' active' : ''}" data-category="${key}" aria-pressed="${curCat === key}">${icon(cat.icon)}<span>${cat.name}</span><span class="category-count">${cards.filter(card => key === 'all' || card.dataset.cat === key).length}</span></button>`).join('');
 }
 
-function initPlugins(){
-  document.querySelectorAll('#questionList pre code').forEach(b=>hljs.highlightElement(b));
-  document.querySelectorAll('#questionList table').forEach(t=>{const w=document.createElement('div');w.className='table-wrap';t.parentNode.insertBefore(w,t);w.appendChild(t)});
-  const mn=document.querySelectorAll('#questionList .mermaid');
-  if(mn.length)mermaid.run({nodes:mn}).catch(e=>console.warn('mermaid:',e));
+async function loadQuestions() {
+  $('loadError').hidden = true;
+  $('noResult').hidden = true;
+  $('questionList').setAttribute('aria-busy', 'true');
+  $('questionList').innerHTML = '<div class="loading-state" role="status">正在整理题目…</div>';
+  $('toggleAllBtn').disabled = true;
+  $('resultCount').textContent = '加载中…';
+  try {
+    const source = await Promise.all(Object.values(Q_FILES).map(async file => {
+      const response = await fetch(file);
+      if (!response.ok) throw new Error(`Failed to load ${file}: ${response.status}`);
+      return response.text();
+    }));
+    $('questionList').innerHTML = source.join('\n');
+    cards = [...$('questionList').querySelectorAll('.q-card')];
+    cards.forEach(card => {
+      const button = card.querySelector(':scope > button');
+      const title = button.children[1];
+      const heading = document.createElement('span');
+      heading.className = 'question-heading';
+      const questionTitle = document.createElement('span');
+      questionTitle.className = 'question-title';
+      questionTitle.textContent = title.textContent;
+      const meta = document.createElement('span');
+      meta.className = 'question-meta';
+      meta.textContent = categories[card.dataset.cat].name;
+      const learnedLabel = document.createElement('span');
+      learnedLabel.className = 'learned-label'; learnedLabel.textContent = '已掌握';
+      meta.appendChild(learnedLabel);
+      heading.append(questionTitle, meta); title.replaceWith(heading);
+      card.querySelector('.chevron').remove();
+      button.insertAdjacentHTML('beforeend', '<svg class="icon disclosure-icon" aria-hidden="true"><use href="#i-chevron"/></svg>');
+      button.id = `trigger-${card.id}`;
+      button.setAttribute('aria-controls', `ans-${card.id}`);
+      button.setAttribute('aria-expanded', 'false');
+      const answer = card.querySelector('.answer-content');
+      answer.hidden = true;
+      answer.setAttribute('aria-labelledby', button.id);
+      card.querySelectorAll('table').forEach(table => {
+        const wrapper = document.createElement('div'); wrapper.className = 'table-wrap'; wrapper.tabIndex = 0; wrapper.setAttribute('role', 'region'); wrapper.setAttribute('aria-label', `${card.dataset.num} 对照表，可横向滚动`);
+        table.before(wrapper); wrapper.appendChild(table);
+      });
+      const actions = document.createElement('div'); actions.className = 'answer-actions';
+      actions.innerHTML = `<button class="learn-button" data-learn="${card.id}" aria-pressed="false">${icon('check')}<span>标记已掌握</span></button>`;
+      answer.firstElementChild.appendChild(actions);
+      card.searchText = `${card.dataset.num} ${card.dataset.title} ${card.dataset.ans} ${categories[card.dataset.cat].name} ${answer.textContent}`.toLocaleLowerCase();
+      updateLearnedCard(card);
+    });
+    $('totalCount').textContent = cards.length;
+    renderCategories(); updateProgress(); applyFilters();
+  } catch (error) {
+    cards = []; $('questionList').innerHTML = ''; $('loadError').hidden = false;
+    $('resultCount').textContent = '加载失败';
+    console.error('加载题目失败:', error);
+  } finally { $('questionList').setAttribute('aria-busy', 'false'); }
 }
 
-// ===== 交互 =====
-function toggleA(id){
-  const el=document.getElementById('ans-'+id),ch=document.getElementById('ch-'+id);
-  el.classList.toggle('open');
-  const isOpen=el.classList.contains('open');
-  ch.src=isOpen?'asserts/shrink.svg':'asserts/expand.svg';
-  ch.alt=isOpen?'折叠':'展开';
-}
-
-function toggleAll(){
-  allOpen=!allOpen;
-  const icon=document.getElementById('toggleAllIcon');
-  icon.src=allOpen?'asserts/shrink.svg':'asserts/expand.svg';
-  icon.alt=allOpen?'全部折叠':'全部展开';
-  document.querySelectorAll('.q-card').forEach(card=>{
-    if(card.style.display==='none')return;
-    const ans=card.querySelector('.answer-content'),ch=card.querySelector('.chevron');
-    if(ans&&ch){ans.classList.toggle('open',allOpen);ch.src=allOpen?'asserts/shrink.svg':'asserts/expand.svg';ch.alt=allOpen?'折叠':'展开'}
+function prepareAnswer(answer) {
+  if (window.hljs) answer.querySelectorAll('pre code:not([data-highlighted])').forEach(block => {
+    try { hljs.highlightElement(block); } catch (error) { console.warn('代码高亮暂不可用:', error); }
   });
+  if (window.mermaid) {
+    diagramQueue = diagramQueue.then(async () => {
+      if (answer.hidden) return;
+      const nodes = [...answer.querySelectorAll('.mermaid:not([data-processed])')];
+      if (nodes.length) await mermaid.run({nodes, suppressErrors:true});
+    }).catch(error => console.warn('图表暂不可用:', error));
+  }
 }
-
-function filterCat(c,btn){
-  curCat=c;
-  document.querySelectorAll('.cat-btn').forEach(b=>{b.classList.remove('active');b.classList.add('bg-gray-100','dark:bg-gray-700')});
-  btn.classList.add('active');btn.classList.remove('bg-gray-100','dark:bg-gray-700');
-  applyFilters();
+function setupMermaid() {
+  mermaid.initialize({startOnLoad:false, theme:'default', securityLevel:'strict'});
+  cards.filter(card => card.classList.contains('is-open')).forEach(card => prepareAnswer(card.querySelector('.answer-content')));
 }
-
-function applyFilters(){
-  let vis=0;
-  document.querySelectorAll('.q-card').forEach(card=>{
-    const cat=card.dataset.cat;
-    let show=curCat==='all'||cat===curCat;
-    card.style.display=show?'':'none';
-    if(show)vis++;
+function highlightOpenAnswers() {
+  cards.filter(card => card.classList.contains('is-open')).forEach(card => prepareAnswer(card.querySelector('.answer-content')));
+}
+function setOpen(card, open) {
+  card.classList.toggle('is-open', open);
+  const answer = card.querySelector('.answer-content');
+  answer.hidden = !open;
+  card.querySelector(':scope > button').setAttribute('aria-expanded', String(open));
+  if (open) prepareAnswer(answer);
+}
+function toggleA(id) {
+  const card = document.getElementById(id);
+  setOpen(card, !card.classList.contains('is-open'));
+  syncExpandButton();
+}
+function syncExpandButton() {
+  const visible = cards.filter(card => !card.hidden);
+  const expanded = visible.length > 0 && visible.every(card => card.classList.contains('is-open'));
+  $('toggleAllBtn').disabled = visible.length === 0;
+  $('toggleAllBtn').setAttribute('aria-expanded', String(expanded));
+  $('toggleAllBtn').querySelector('span').textContent = expanded ? '收起全部' : '展开全部';
+}
+function applyFilters() {
+  const terms = $('questionSearch').value.trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);
+  let visible = 0;
+  cards.forEach(card => {
+    card.hidden = !(curCat === 'all' || card.dataset.cat === curCat) || (curView === 'pending' && learned.has(card.id)) || !terms.every(term => card.searchText.includes(term));
+    if (!card.hidden) visible++;
   });
-  $noR.classList.toggle('hidden',vis>0);
+  $('listTitle').textContent = categories[curCat].name;
+  $('resultCount').textContent = `${visible} 道题目`;
+  $('noResult').hidden = visible > 0 || cards.length === 0;
+  const completed = curView === 'pending' && !terms.length;
+  $('emptyTitle').textContent = completed ? '这个专题的题目，都已掌握' : '没有找到相关题目';
+  $('emptyMessage').textContent = completed ? '继续温习其他专题，或切换「全部题目」回顾解析。' : '换个关键词试试，或查看其他知识专题。';
+  $('clearSearch').hidden = $('questionSearch').value.length === 0;
+  document.querySelector('.search-key').hidden = $('questionSearch').value.length > 0;
+  document.querySelectorAll('[data-view]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.view === curView)));
+  syncExpandButton();
 }
-
-function toggleDark(){
-  document.documentElement.classList.toggle('dark');
-  localStorage.setItem('dark',document.documentElement.classList.contains('dark'));
+function updateLearnedCard(card) {
+  const done = learned.has(card.id), button = card.querySelector('[data-learn]');
+  card.querySelector('.learned-label').hidden = !done;
+  button.setAttribute('aria-pressed', String(done));
+  button.querySelector('span').textContent = done ? '已掌握 · 点击撤销' : '标记已掌握';
 }
-
-// ===== 事件 =====
-window.addEventListener('scroll',()=>{
-  const btn=document.getElementById('backTop');
-  if(window.scrollY>300){btn.classList.remove('opacity-0','pointer-events-none');btn.classList.add('opacity-100')}
-  else{btn.classList.add('opacity-0','pointer-events-none');btn.classList.remove('opacity-100')}
+function updateProgress() {
+  const count = cards.filter(card => learned.has(card.id)).length;
+  $('learnedCount').textContent = count; $('progressTotal').textContent = cards.length;
+  $('studyProgress').max = cards.length || 1; $('studyProgress').value = count;
+}
+function syncThemeButton() {
+  const dark = document.documentElement.classList.contains('dark');
+  $('themeToggle').setAttribute('aria-pressed', String(dark));
+  $('themeToggle').setAttribute('aria-label', dark ? '切换浅色模式' : '切换深色模式');
+  $('themeToggle').title = dark ? '切换浅色模式' : '切换深色模式';
+}
+$('themeToggle').addEventListener('click', () => {
+  document.documentElement.classList.toggle('dark'); syncThemeButton();
+  try { localStorage.setItem('dark', document.documentElement.classList.contains('dark')); } catch {}
 });
-
-// ===== 初始化 =====
-if(localStorage.getItem('dark')==='true')document.documentElement.classList.add('dark');
-loadQuestions();
+$('categoryNav').addEventListener('click', event => {
+  const button = event.target.closest('[data-category]'); if (!button) return;
+  curCat = button.dataset.category;
+  document.querySelectorAll('[data-category]').forEach(item => { item.classList.toggle('active', item === button); item.setAttribute('aria-pressed', String(item === button)); });
+  applyFilters();
+});
+$('questionSearch').addEventListener('input', applyFilters);
+$('clearSearch').addEventListener('click', () => { $('questionSearch').value = ''; applyFilters(); $('questionSearch').focus(); });
+$('questionSearch').addEventListener('keydown', event => { if (event.key === 'Escape') { $('questionSearch').value = ''; applyFilters(); } });
+document.addEventListener('keydown', event => {
+  if (event.key === '/' && !event.ctrlKey && !event.metaKey && !event.altKey && !event.target.closest('input,textarea,select,[contenteditable]')) { event.preventDefault(); $('questionSearch').focus(); }
+});
+document.querySelectorAll('[data-view]').forEach(button => button.addEventListener('click', () => { curView = button.dataset.view; applyFilters(); }));
+$('toggleAllBtn').addEventListener('click', () => {
+  const open = $('toggleAllBtn').getAttribute('aria-expanded') !== 'true';
+  cards.filter(card => !card.hidden).forEach(card => setOpen(card, open)); syncExpandButton();
+});
+$('questionList').addEventListener('click', event => {
+  const button = event.target.closest('[data-learn]'); if (!button) return;
+  const id = button.dataset.learn, card = document.getElementById(id);
+  learned.has(id) ? learned.delete(id) : learned.add(id);
+  updateLearnedCard(card); updateProgress();
+  let message = learned.has(id) ? `${card.dataset.num} 已标记为掌握` : `${card.dataset.num} 已取消掌握标记`;
+  try { localStorage.setItem('qa-learned', JSON.stringify([...learned])); } catch { message += '，浏览器无法保存进度，刷新后会丢失'; }
+  $('saveStatus').textContent = message;
+  if (curView === 'pending' && learned.has(id)) {
+    const visible = cards.filter(item => !item.hidden), index = visible.indexOf(card);
+    const next = visible[index + 1] || visible[index - 1];
+    applyFilters();
+    (next ? next.querySelector(':scope > button') : document.querySelector('[data-view="all"]')).focus();
+  }
+});
+$('resetFilters').addEventListener('click', () => {
+  curCat = 'all'; curView = 'all'; $('questionSearch').value = ''; renderCategories(); applyFilters(); $('questionSearch').focus();
+});
+$('retryLoad').addEventListener('click', loadQuestions);
+window.addEventListener('scroll', () => { $('backTop').hidden = window.scrollY < 450; }, {passive:true});
+$('backTop').addEventListener('click', () => { window.scrollTo({top:0, behavior:matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'}); });
+syncThemeButton(); loadQuestions();
 </script>
+<script async src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" onload="highlightOpenAnswers()"></script>
+<script async src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js" onload="setupMermaid()"></script>
 </body>
 </html>
