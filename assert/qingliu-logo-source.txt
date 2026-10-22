@@ -1,0 +1,15 @@
+清流 · 小篆朱砂长印
+
+Glyph source: Kaiyuan Small Seal (開元小篆)
+Project: https://github.com/frankslin/kaiyuan-small-seal-font
+License: SIL Open Font License 1.1 (licenses/kaiyuan-small-seal-OFL.txt)
+
+清: glyphs/u3F041.svg, source ccz C-08108
+Git blob: 4d200beaaea54053499806d71f15c963ca36ec1e
+流: glyphs/u3F16C.svg, source ccz C-08399
+Git blob: a9d34afca3e3f4ae67daa4830f1b2dacc2a0ef3f
+
+Glyphs originate in the public-domain 陳昌治本《說文解字》.
+Modern-character mapping verified against the project's Unicode SealSources.txt.
+This SVG adapts the glyph proportions and thickens their outlines for small-size logo use.
+No font binary is bundled or required by the website.
