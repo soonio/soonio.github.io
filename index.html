@@ -55,8 +55,9 @@
     .ridge-mid { fill: var(--ridge-mid); transition: fill .5s; }
     .ridge-front { fill: var(--ridge-front); transition: fill .5s; }
     .ridge-line { fill: none; stroke: #b8c4a4; stroke-width: .7; opacity: .15; }
-    .mist { position: absolute; width: 120%; height: 150px; left: -10%; bottom: 27%; background: radial-gradient(ellipse, #cad1b314, transparent 65%); filter: blur(16px); }
-    .mist-low { bottom: 10%; opacity: .6; }
+    .mist { position: absolute; width: 120%; height: clamp(150px, 18svh, 230px); left: -10%; bottom: 27%; background: radial-gradient(ellipse at 28% 55%, #d5dfc32b, transparent 52%), radial-gradient(ellipse at 72% 45%, #becfb526, transparent 48%); filter: blur(18px); animation: mist-drift 6s ease-in-out infinite alternate; }
+    .mist-low { bottom: 10%; opacity: .65; animation-duration: 8s; animation-delay: -4s; animation-direction: alternate-reverse; }
+    @keyframes mist-drift { from { transform: translateX(-6%); } to { transform: translateX(6%); } }
     .water { position: absolute; right: 12%; bottom: 6%; width: 22%; height: 26%; opacity: .18; transform: skewX(-25deg); background: repeating-linear-gradient(0deg, transparent 0 14px, #c7d2ae 15px, transparent 16px 23px); mask-image: radial-gradient(ellipse, #000, transparent 70%); }
     .birds { position: absolute; width: 100px; right: 31%; top: 40%; fill: none; stroke: #cad0b8; stroke-width: 1.2; opacity: .6; }
     .hero-content { width: 100%; position: relative; padding-block: 48px 84px; }
