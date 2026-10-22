@@ -55,9 +55,10 @@
     .ridge-mid { fill: var(--ridge-mid); transition: fill .5s; }
     .ridge-front { fill: var(--ridge-front); transition: fill .5s; }
     .ridge-line { fill: none; stroke: #b8c4a4; stroke-width: .7; opacity: .15; }
-    .mist { position: absolute; width: 120%; height: clamp(150px, 18svh, 230px); left: -10%; bottom: 27%; background: radial-gradient(ellipse at 28% 55%, #d5dfc32b, transparent 52%), radial-gradient(ellipse at 72% 45%, #becfb526, transparent 48%); filter: blur(18px); animation: mist-drift 6s ease-in-out infinite alternate; }
-    .mist-low { bottom: 10%; opacity: .65; animation-duration: 8s; animation-delay: -4s; animation-direction: alternate-reverse; }
-    @keyframes mist-drift { from { transform: translateX(-6%); } to { transform: translateX(6%); } }
+    .mist-field { position: absolute; inset: 0; mask-image: linear-gradient(90deg, transparent 55%, #000 75%); }
+    .mist { position: absolute; width: 120%; height: clamp(140px, 16svh, 210px); left: -10%; bottom: 26%; background: radial-gradient(ellipse at 58% 55%, #dce7d43d, transparent 38%), radial-gradient(ellipse at 82% 45%, #cbdac733, transparent 32%); filter: blur(12px); animation: mist-drift 6s ease-in-out infinite alternate; }
+    .mist-low { bottom: 10%; opacity: .8; animation-duration: 8s; animation-delay: -4s; animation-direction: alternate-reverse; }
+    @keyframes mist-drift { from { transform: translateX(-12%); } to { transform: translateX(12%); } }
     .water { position: absolute; right: 12%; bottom: 6%; width: 22%; height: 26%; opacity: .18; transform: skewX(-25deg); background: repeating-linear-gradient(0deg, transparent 0 14px, #c7d2ae 15px, transparent 16px 23px); mask-image: radial-gradient(ellipse, #000, transparent 70%); }
     .birds { position: absolute; width: 100px; right: 31%; top: 40%; fill: none; stroke: #cad0b8; stroke-width: 1.2; opacity: .6; }
     .hero-content { width: 100%; position: relative; padding-block: 48px 84px; }
@@ -153,6 +154,7 @@
       .seal { margin-top: 24px; }
       .moon { left: auto; right: 10%; top: 100px; width: 190px; opacity: .9; }
       .moon-orbit { left: auto; right: -3%; top: 60px; width: 290px; }
+      .mist-field { height: 900px; mask-image: linear-gradient(180deg, transparent 600px, #000 780px); }
       .mountains { width: 190%; max-width: none; left: -64%; height: 65%; opacity: .8; }
       .birds { right: 22%; top: 280px; width: 70px; }
       .vertical-note { top: 42px; font-size: 10px; right: 25px; letter-spacing: .3em; }
@@ -185,7 +187,7 @@
             <path class="ridge-front" d="m0 492 101 15 82 45 88-6 109 55 109-24 91 43 85-10 94 20 84-4 97 24 80-10 90-15 78-38 79-11 61-50 71 18 77-35 65 13 59-41V650H0Z"/>
             <g fill="none" stroke="#97ad8d" stroke-width="1" opacity=".12"><path d="m995 536 148-5m-100 26 129-4m-116 26 79-2m-180 26 161-5"/></g>
           </svg>
-          <div class="mist"></div><div class="mist mist-low"></div><div class="water"></div>
+          <div class="mist-field"><div class="mist"></div><div class="mist mist-low"></div></div><div class="water"></div>
         </div>
     <header class="header wrap">
       <div class="brand" aria-label="清流">
