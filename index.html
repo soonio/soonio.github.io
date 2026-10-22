@@ -46,14 +46,14 @@
     .hero { position: relative; flex: 1; min-height: 610px; display: flex; align-items: center; }
     .landscape { position: absolute; z-index: -1; inset: 0; overflow: hidden; pointer-events: none; }
     .sky-glow { position: absolute; inset: 0; background: radial-gradient(ellipse at 77% 32%, #a9c6a51a, transparent 45%); }
-    .moon { position: absolute; width: clamp(210px, 25vw, 390px); aspect-ratio: 1; left: 65%; top: 9%; border-radius: 50%; background: radial-gradient(circle at 38% 32%, #eee9cf 0%, #d5d5b5 55%, #aabca0 100%); box-shadow: 0 0 80px #d5dcc512, 0 0 180px #d5dcc509; transition: background 1.2s, transform 1.2s; }
+    .moon { position: absolute; width: clamp(210px, 25vw, 390px); aspect-ratio: 1; left: 65%; top: 9%; border-radius: 50%; background: radial-gradient(circle at 38% 32%, #eee9cf 0%, #d5d5b5 55%, #aabca0 100%); box-shadow: 0 0 80px #d5dcc512, 0 0 180px #d5dcc509; transition: background .5s, transform .5s; }
     .moon::after { content: ""; position: absolute; inset: 0; border-radius: inherit; opacity: .3; background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='m'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.035' numOctaves='4' seed='8'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Ccircle cx='100' cy='100' r='100' filter='url(%23m)' opacity='.7'/%3E%3C/svg%3E"); mix-blend-mode: multiply; }
     .moon-orbit { position: absolute; width: 42vw; max-width: 620px; aspect-ratio: 1; border: 1px solid #cad4b612; border-radius: 50%; top: -4%; left: 56.5%; }
     .stars { position: absolute; width: 3px; height: 3px; top: 18%; left: 51%; background: #e5e4ce88; border-radius: 50%; box-shadow: 68px 137px 0 -1px #d6dac9, 331px -42px 0 -1px #d6dac9, 440px 93px 0 -1px #d6dac9, -176px -39px 0 -1px #d6dac9, 290px 230px 0 -1px #d6dac9; }
     .mountains { position: absolute; inset: auto 0 0; width: 100%; height: 77%; }
-    .ridge-back { fill: var(--ridge-back); opacity: .65; transition: fill 1.2s; }
-    .ridge-mid { fill: var(--ridge-mid); transition: fill 1.2s; }
-    .ridge-front { fill: var(--ridge-front); transition: fill 1.2s; }
+    .ridge-back { fill: var(--ridge-back); opacity: .65; transition: fill .5s; }
+    .ridge-mid { fill: var(--ridge-mid); transition: fill .5s; }
+    .ridge-front { fill: var(--ridge-front); transition: fill .5s; }
     .ridge-line { fill: none; stroke: #b8c4a4; stroke-width: .7; opacity: .15; }
     .mist { position: absolute; width: 120%; height: 150px; left: -10%; bottom: 27%; background: radial-gradient(ellipse, #cad1b314, transparent 65%); filter: blur(16px); }
     .mist-low { bottom: 10%; opacity: .6; }
@@ -77,9 +77,9 @@
     .collection-heading p { font-size: 10px; letter-spacing: .16em; margin: 0; color: var(--muted); }
     .poem-list { display: grid; grid-template-columns: repeat(3, 1fr); }
     .poem-choice { position: relative; display: grid; grid-template-columns: 28px 1fr 24px; align-items: start; gap: 14px; text-align: left; background: transparent; border: 0; border-bottom: 1px solid var(--line); padding: 29px 26px 30px 0; transition: background .3s; min-width: 0; }
-    .poem-choice + .poem-choice { padding-left: 27px; }
-    .poem-choice + .poem-choice::before { content: ""; width: 1px; height: 42px; background: var(--line); position: absolute; left: 0; top: 31px; }
-    .poem-choice::after { content: ""; position: absolute; inset: -1px auto auto 0; width: 0; height: 2px; background: var(--accent); transition: width .45s; }
+    .poem-choice:not(:nth-child(3n + 1)) { padding-left: 27px; }
+    .poem-choice:not(:nth-child(3n + 1))::before { content: ""; width: 1px; height: 42px; background: var(--line); position: absolute; left: 0; top: 31px; }
+    .poem-choice::after { content: ""; position: absolute; inset: -1px auto auto 0; width: 0; height: 2px; background: var(--accent); transition: width .3s; }
     .poem-choice[aria-pressed="true"]::after { width: 100%; }
     .poem-choice:hover { background: #ccd1b905; }
     .choice-number { font: italic 14px Georgia, serif; color: var(--muted); padding-top: 5px; }
@@ -94,6 +94,12 @@
     .page[data-scene="1"] .moon { transform: translate(-8%, 8%) scale(.88); }
     .page[data-scene="2"] { --sky: #302b24; --sky-top: #1b201d; --ridge-back: #67654a; --ridge-mid: #414a37; --ridge-front: #222f27; --accent: #e7c08c; --line: #b4a5833b; }
     .page[data-scene="2"] .moon { background: radial-gradient(circle at 40% 30%, #f3dcac, #cba573); transform: translate(-12%, 14%) scale(.95); }
+    .page[data-scene="3"] { --sky: #25322e; --sky-top: #121f20; --ridge-back: #607168; --ridge-mid: #3d564c; --ridge-front: #213b32; --accent: #c5d4b6; --line: #9bb49c3b; }
+    .page[data-scene="3"] .moon { transform: translate(-5%, 12%) scale(.85); }
+    .page[data-scene="4"] { --sky: #222c37; --sky-top: #121a28; --ridge-back: #4b5e72; --ridge-mid: #304352; --ridge-front: #1b303b; --accent: #c2ccd9; --line: #9caec53b; }
+    .page[data-scene="4"] .moon { transform: translate(2%, 4%) scale(.8); }
+    .page[data-scene="5"] { --sky: #353025; --sky-top: #26271f; --ridge-back: #7a7357; --ridge-mid: #515742; --ridge-front: #303d2e; --accent: #e9c78e; --line: #c5ad7d3b; }
+    .page[data-scene="5"] .moon { background: radial-gradient(circle at 40% 30%, #f1d5a2, #d4a469); transform: translate(-8%, 16%) scale(.92); }
     @media (min-width: 901px) and (max-width: 1599px) and (min-height: 800px) {
       .hero { min-height: 520px; }
       .hero-content { padding-block: 32px 40px; }
@@ -128,7 +134,7 @@
       .moon { left: 64%; top: 16%; width: 260px; opacity: .8; }
       .moon-orbit { left: 54%; top: 9%; width: 440px; }
       .poem-choice { gap: 9px; padding-right: 15px; }
-      .poem-choice + .poem-choice { padding-left: 16px; }
+      .poem-choice:not(:nth-child(3n + 1)) { padding-left: 16px; }
       .choice-line { font-size: 11px; }
       .choice-name { font-size: 20px; }
     }
@@ -140,7 +146,7 @@
       .hero-content { padding-block: 210px 72px; }
       .eyebrow { font-size: 10px; margin-bottom: 23px; }
       h1 { font-size: clamp(39px, 10vw, 60px); line-height: 1.5; margin-bottom: 22px; }
-      .page[data-scene="1"] h1, .page[data-scene="2"] h1 { font-size: clamp(27px, 8.5vw, 48px); }
+      .page[data-long-verse="true"] h1 { font-size: clamp(27px, 8.5vw, 48px); }
       .poem-meta { font-size: 12px; }
       .poem-rest { font-size: 13px; letter-spacing: .08em; margin-top: 23px; }
       .seal { margin-top: 24px; }
@@ -153,8 +159,8 @@
       .scene-number strong { font-size: 29px; }
       .collection-heading p { font-size: 9px; letter-spacing: .06em; }
       .poem-list { grid-template-columns: 1fr; }
-      .poem-choice, .poem-choice + .poem-choice { padding: 22px 4px; gap: 16px; grid-template-columns: 26px 1fr 24px; }
-      .poem-choice + .poem-choice::before { display: none; }
+      .poem-choice, .poem-choice:not(:nth-child(3n + 1)) { padding: 22px 4px; gap: 16px; grid-template-columns: 26px 1fr 24px; }
+      .poem-choice:not(:nth-child(3n + 1))::before { display: none; }
       .choice-name { font-size: 21px; }
       .choice-line { font-size: 12px; }
       .footer { padding-block: 25px 30px; gap: 16px; }
@@ -197,14 +203,17 @@
           <span class="seal" aria-hidden="true">清<br>流</span>
         </div>
         <span class="vertical-note" id="vertical-note" aria-hidden="true">随意春芳歇，王孙自可留。</span>
-        <div class="scene-number" aria-hidden="true"><strong id="scene-number">01</strong><span>/ 03</span></div>
+        <div class="scene-number" aria-hidden="true"><strong id="scene-number">01</strong><span id="scene-total">/ 06</span></div>
       </section>
       <section class="collection wrap" aria-labelledby="collection-title">
-        <div class="collection-heading"><h2 id="collection-title">拾三两诗意</h2><p>换一首诗，入另一重山水</p></div>
+        <div class="collection-heading"><h2 id="collection-title">山水诗笺</h2><p>换一首诗，入另一重山水</p></div>
         <div class="poem-list" role="group" aria-label="选择诗境">
           <button class="poem-choice" type="button" data-index="0" aria-pressed="true"><span class="choice-number">01</span><span><span class="choice-name">空山</span><span class="choice-line">王维 · 山居秋暝</span></span><svg class="choice-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg></button>
           <button class="poem-choice" type="button" data-index="1" aria-pressed="false"><span class="choice-number">02</span><span><span class="choice-name">江月</span><span class="choice-line">张若虚 · 春江花月夜</span></span><svg class="choice-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg></button>
           <button class="poem-choice" type="button" data-index="2" aria-pressed="false"><span class="choice-number">03</span><span><span class="choice-name">远帆</span><span class="choice-line">李白 · 望天门山</span></span><svg class="choice-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg></button>
+          <button class="poem-choice" type="button" data-index="3" aria-pressed="false"><span class="choice-number">04</span><span><span class="choice-name">庐山</span><span class="choice-line">苏轼 · 题西林壁</span></span><svg class="choice-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg></button>
+          <button class="poem-choice" type="button" data-index="4" aria-pressed="false"><span class="choice-number">05</span><span><span class="choice-name">独坐</span><span class="choice-line">李白 · 独坐敬亭山</span></span><svg class="choice-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg></button>
+          <button class="poem-choice" type="button" data-index="5" aria-pressed="false"><span class="choice-number">06</span><span><span class="choice-name">登高</span><span class="choice-line">王之涣 · 登鹳雀楼</span></span><svg class="choice-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg></button>
         </div>
       </section>
     </main>
@@ -214,13 +223,16 @@
     const poems = [
       { label: '第一境 · 空山新雨', lines: ['明月松间照，', '清泉石上流。'], author: '唐 · 王维', title: '《山居秋暝》', rest: ['空山新雨后，天气晚来秋。', '竹喧归浣女，莲动下渔舟。'], note: '随意春芳歇，王孙自可留。' },
       { label: '第二境 · 江天一色', lines: ['春江潮水连海平，', '海上明月共潮生。'], author: '唐 · 张若虚', title: '《春江花月夜》节选', rest: ['滟滟随波千万里，', '何处春江无月明。'], note: '江畔何人初见月？江月何年初照人？' },
-      { label: '第三境 · 孤帆日边', lines: ['两岸青山相对出，', '孤帆一片日边来。'], author: '唐 · 李白', title: '《望天门山》', rest: ['天门中断楚江开，', '碧水东流至此回。'], note: '两岸青山相对出，孤帆一片日边来。' }
+      { label: '第三境 · 孤帆日边', lines: ['两岸青山相对出，', '孤帆一片日边来。'], author: '唐 · 李白', title: '《望天门山》', rest: ['天门中断楚江开，', '碧水东流至此回。'], note: '两岸青山相对出，孤帆一片日边来。' },
+      { label: '第四境 · 庐山烟岚', lines: ['不识庐山真面目，', '只缘身在此山中。'], author: '宋 · 苏轼', title: '《题西林壁》', rest: ['横看成岭侧成峰，', '远近高低各不同。'], note: '横看成岭侧成峰，远近高低各不同。' },
+      { label: '第五境 · 独坐看山', lines: ['相看两不厌，', '只有敬亭山。'], author: '唐 · 李白', title: '《独坐敬亭山》', rest: ['众鸟高飞尽，', '孤云独去闲。'], note: '众鸟高飞尽，孤云独去闲。' },
+      { label: '第六境 · 更上一层', lines: ['欲穷千里目，', '更上一层楼。'], author: '唐 · 王之涣', title: '《登鹳雀楼》', rest: ['白日依山尽，', '黄河入海流。'], note: '白日依山尽，黄河入海流。' }
     ];
     const page = document.getElementById('page');
     const poem = document.getElementById('poem');
     const choices = [...document.querySelectorAll('.poem-choice')];
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    let current = 0;
+    let current = -1;
     function setLines(id, lines, tag) {
       const node = document.getElementById(id);
       node.replaceChildren();
@@ -235,11 +247,12 @@
         }
       });
     }
-    function selectPoem(index) {
+    function selectPoem(index, animate = true) {
       if (index === current) return;
       current = index;
       const selected = poems[index];
       page.dataset.scene = String(index);
+      page.dataset.longVerse = String(selected.lines.some(line => line.length > 6));
       document.getElementById('scene-label').textContent = selected.label;
       setLines('verse', selected.lines, 'span');
       setLines('poem-rest', selected.rest);
@@ -249,14 +262,16 @@
       document.getElementById('scene-number').textContent = String(index + 1).padStart(2, '0');
       choices.forEach((button, i) => button.setAttribute('aria-pressed', String(i === index)));
       poem.getAnimations().forEach(animation => animation.cancel());
-      if (!reducedMotion.matches) {
-        poem.animate([{ opacity: 0, transform: 'translateY(10px)' }, { opacity: 1, transform: 'translateY(0)' }], { duration: 650, easing: 'ease-out' });
+      if (animate && !reducedMotion.matches) {
+        poem.animate([{ opacity: 0, transform: 'translateY(10px)' }, { opacity: 1, transform: 'translateY(0)' }], { duration: 350, easing: 'ease-out' });
       }
     }
     choices.forEach(button => button.addEventListener('click', () => selectPoem(Number(button.dataset.index))));
     reducedMotion.addEventListener('change', event => {
       if (event.matches) poem.getAnimations().forEach(animation => animation.cancel());
     });
+    document.getElementById('scene-total').textContent = `/ ${String(poems.length).padStart(2, '0')}`;
+    selectPoem(Math.floor(Math.random() * poems.length), false);
     document.getElementById('year').textContent = new Date().getFullYear();
   </script>
 </body>
